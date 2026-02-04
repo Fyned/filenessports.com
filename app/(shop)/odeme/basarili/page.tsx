@@ -1,19 +1,28 @@
 'use client'
 
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect, useState, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { CheckCircle, Package, Mail, ArrowRight, Loader2 } from 'lucide-react'
 import confetti from 'canvas-confetti'
+import { useCartStore } from '@/stores/cart-store'
 
 function PaymentSuccessContent() {
   const searchParams = useSearchParams()
   const orderNumber = searchParams.get('order')
   const [showConfetti, setShowConfetti] = useState(false)
+  const clearCart = useCartStore((state) => state.clearCart)
+  const cartCleared = useRef(false)
 
   useEffect(() => {
+    // Ödeme başarılı - sepeti temizle (sadece bir kez)
+    if (!cartCleared.current) {
+      cartCleared.current = true
+      clearCart()
+    }
+
     // Konfeti efekti
     if (!showConfetti) {
       setShowConfetti(true)
@@ -24,7 +33,7 @@ function PaymentSuccessContent() {
         colors: ['#BB1624', '#1C2840', '#FFD700'],
       })
     }
-  }, [showConfetti])
+  }, [showConfetti, clearCart])
 
   return (
     <div className="max-w-xl mx-auto text-center">

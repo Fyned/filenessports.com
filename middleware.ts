@@ -1,4 +1,5 @@
 import { createServerClient } from '@supabase/ssr'
+import { createClient } from '@supabase/supabase-js'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
@@ -59,6 +60,24 @@ export async function middleware(request: NextRequest) {
         url.pathname = '/giris'
         url.searchParams.set('redirect', pathname)
         return NextResponse.redirect(url)
+      }
+
+      // Admin rol kontrolü - service role key ile kullanıcı rolünü kontrol et
+      const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+      if (serviceRoleKey) {
+        const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey)
+        const { data: profile } = await supabaseAdmin
+          .from('user_profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single()
+
+        if (!profile || profile.role !== 'admin') {
+          // Kullanıcı admin değil - 403 Forbidden
+          const url = request.nextUrl.clone()
+          url.pathname = '/yetkisiz'
+          return NextResponse.redirect(url)
+        }
       }
     }
 

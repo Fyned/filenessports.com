@@ -29,7 +29,7 @@ interface Product {
   price: number
   compare_at_price: number | null
   images: string[]
-  category: { name: string; slug: string } | null
+  category: { name: string; slug: string }[] | { name: string; slug: string } | null
 }
 
 interface Category {
@@ -182,8 +182,8 @@ export default async function HomePage() {
               </Link>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {featuredProducts.map((product: Product) => (
-                <ProductCard key={product.id} product={product} />
+              {featuredProducts.map((product: any) => (
+                <ProductCard key={product.id} product={product as any} />
               ))}
             </div>
           </div>
@@ -234,8 +234,8 @@ export default async function HomePage() {
               </Link>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {newProducts.map((product: Product) => (
-                <ProductCard key={product.id} product={product} />
+              {newProducts.map((product: any) => (
+                <ProductCard key={product.id} product={product as any} />
               ))}
             </div>
           </div>

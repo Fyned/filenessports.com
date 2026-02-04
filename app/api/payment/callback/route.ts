@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { completeThreedsPayment } from '@/lib/iyzico'
+import { completeThreedsPayment, retrievePayment } from '@/lib/iyzico'
 import { sendOrderConfirmation, sendPaymentReceipt } from '@/lib/email'
 
 const supabaseAdmin = createClient(
@@ -17,7 +17,12 @@ export async function POST(request: NextRequest) {
     const conversationId = formData.get('conversationId') as string
     const mdStatus = formData.get('mdStatus') as string
 
-    console.log('iyzico callback:', { status, paymentId, conversationId, mdStatus })
+    // GÜVENLİK: conversationId zorunlu ve geçerli olmalı
+    if (!conversationId || !conversationId.startsWith('conv_')) {
+      return NextResponse.redirect(
+        `${process.env.NEXT_PUBLIC_SITE_URL}/odeme/basarisiz?error=invalid_callback`
+      )
+    }
 
     // Siparişi bul
     const { data: order, error: orderError } = await supabaseAdmin
@@ -52,6 +57,35 @@ export async function POST(request: NextRequest) {
 
     // 3D Secure ödemeyi tamamla
     const result = await completeThreedsPayment(paymentId, conversationId)
+
+    // GÜVENLİK: Ödeme sonucunu iyzico API'den doğrula
+    if (result.status === 'success' && result.paymentId) {
+      const verifyResult = await retrievePayment(result.paymentId, conversationId)
+
+      // Ödeme durumu ve tutarı doğrula
+      if (verifyResult.status !== 'success' ||
+          verifyResult.paymentStatus !== 'SUCCESS' ||
+          parseFloat(verifyResult.paidPrice || '0') !== order.total) {
+        console.error('Payment verification failed:', {
+          expected: order.total,
+          received: verifyResult.paidPrice,
+          status: verifyResult.paymentStatus
+        })
+
+        await supabaseAdmin
+          .from('orders')
+          .update({
+            status: 'cancelled',
+            payment_status: 'failed',
+            admin_notes: 'Ödeme doğrulama başarısız - tutarlar eşleşmiyor',
+          })
+          .eq('id', order.id)
+
+        return NextResponse.redirect(
+          `${process.env.NEXT_PUBLIC_SITE_URL}/odeme/basarisiz?order=${order.order_number}&error=verification_failed`
+        )
+      }
+    }
 
     if (result.status === 'success') {
       // Ödeme başarılı

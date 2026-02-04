@@ -47,6 +47,46 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // TC Kimlik numarası validasyonu (11 haneli olmalı)
+    if (!customer.identityNumber || customer.identityNumber.length !== 11) {
+      return NextResponse.json(
+        { error: 'Geçerli bir TC Kimlik numarası giriniz (11 haneli)' },
+        { status: 400 }
+      )
+    }
+
+    // TC Kimlik algoritma kontrolü
+    const tc = customer.identityNumber
+    if (tc[0] === '0') {
+      return NextResponse.json(
+        { error: 'TC Kimlik numarası 0 ile başlayamaz' },
+        { status: 400 }
+      )
+    }
+
+    // STOK KONTROLÜ - Ödeme başlamadan önce stok kontrolü yap
+    for (const item of cartItems) {
+      if (item.productId) {
+        const { data: product } = await supabaseAdmin
+          .from('products')
+          .select('stock_quantity, name')
+          .eq('id', item.productId)
+          .single()
+
+        if (product && product.stock_quantity !== null && product.stock_quantity < item.quantity) {
+          return NextResponse.json(
+            {
+              error: `"${product.name}" ürünü için yeterli stok yok. Mevcut stok: ${product.stock_quantity}`,
+              outOfStock: true,
+              productName: product.name,
+              availableStock: product.stock_quantity
+            },
+            { status: 400 }
+          )
+        }
+      }
+    }
+
     // Toplam tutarı hesapla
     let totalPrice = 0
     const basketItems: IyzicoBasketItem[] = cartItems.map((item: any) => {
@@ -111,7 +151,7 @@ export async function POST(request: NextRequest) {
         surname: customer.lastName,
         email: customer.email,
         gsmNumber: customer.phone?.replace(/\s/g, '') || '+905000000000',
-        identityNumber: customer.identityNumber || '11111111111', // TC Kimlik
+        identityNumber: customer.identityNumber, // TC Kimlik - validasyon yukarıda yapıldı
         registrationAddress: shippingAddress.address,
         city: shippingAddress.city,
         country: 'Turkey',

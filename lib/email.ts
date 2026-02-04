@@ -9,6 +9,17 @@ const FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || 'noreply@filenes.com'
 const SITE_NAME = 'Filenes Sports'
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://filenes.com'
 
+// XSS Koruması: HTML karakterlerini escape et
+function escapeHtml(text: string | undefined | null): string {
+  if (!text) return ''
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
 // Types
 interface OrderItem {
   product_name: string
@@ -201,13 +212,13 @@ export async function sendOrderConfirmation(
   order: Order,
   items: OrderItem[]
 ): Promise<void> {
-  const customerName = customer.first_name ? `${customer.first_name} ${customer.last_name || ''}`.trim() : 'Değerli Müşterimiz'
+  const customerName = customer.first_name ? escapeHtml(`${customer.first_name} ${customer.last_name || ''}`.trim()) : 'Değerli Müşterimiz'
 
   const itemsHtml = items
     .map(
       (item) => `
       <tr>
-        <td>${item.product_name}${item.variant_name ? ` - ${item.variant_name}` : ''}</td>
+        <td>${escapeHtml(item.product_name)}${item.variant_name ? ` - ${escapeHtml(item.variant_name)}` : ''}</td>
         <td style="text-align: center;">${item.quantity}</td>
         <td style="text-align: right;">${formatCurrency(item.unit_price)}</td>
         <td style="text-align: right;">${formatCurrency(item.total_price)}</td>
@@ -222,7 +233,7 @@ export async function sendOrderConfirmation(
     <p>Siparişiniz başarıyla alındı ve hazırlanmak üzere işleme konuldu.</p>
 
     <div style="background: #e8f5e9; padding: 16px; border-radius: 6px; margin: 16px 0;">
-      <strong>Sipariş Numarası:</strong> ${order.order_number}
+      <strong>Sipariş Numarası:</strong> ${escapeHtml(order.order_number)}
     </div>
 
     <h3>Sipariş Detayları</h3>
@@ -264,14 +275,14 @@ export async function sendOrderConfirmation(
     <h3>Teslimat Adresi</h3>
     <div class="address-box">
       <p style="margin: 0;">
-        ${order.shipping_address.address}<br>
-        ${order.shipping_address.district} / ${order.shipping_address.city}<br>
-        ${order.shipping_address.zipCode}
+        ${escapeHtml(order.shipping_address.address)}<br>
+        ${escapeHtml(order.shipping_address.district)} / ${escapeHtml(order.shipping_address.city)}<br>
+        ${escapeHtml(order.shipping_address.zipCode)}
       </p>
     </div>
 
     <p style="text-align: center;">
-      <a href="${SITE_URL}/siparis-takip?siparis=${order.order_number}" class="btn">
+      <a href="${SITE_URL}/siparis-takip?siparis=${encodeURIComponent(order.order_number)}" class="btn">
         Siparişimi Takip Et
       </a>
     </p>
@@ -290,9 +301,7 @@ export async function sendOrderConfirmation(
 
   try {
     await sgMail.send(msg)
-    console.log(`Order confirmation email sent to ${customer.email}`)
   } catch (error) {
-    console.error('Error sending order confirmation email:', error)
     throw error
   }
 }
@@ -304,29 +313,29 @@ export async function sendShippingNotification(
   trackingNumber: string,
   carrierName: string = 'Kargo Firması'
 ): Promise<void> {
-  const customerName = customer.first_name ? `${customer.first_name} ${customer.last_name || ''}`.trim() : 'Değerli Müşterimiz'
+  const customerName = customer.first_name ? escapeHtml(`${customer.first_name} ${customer.last_name || ''}`.trim()) : 'Değerli Müşterimiz'
 
   const content = `
     <h2 style="margin-top: 0;">Siparişiniz Yola Çıktı! 🚚</h2>
     <p>Merhaba ${customerName},</p>
-    <p><strong>${order.order_number}</strong> numaralı siparişiniz kargoya verildi ve yola çıktı!</p>
+    <p><strong>${escapeHtml(order.order_number)}</strong> numaralı siparişiniz kargoya verildi ve yola çıktı!</p>
 
     <div style="background: #cce5ff; padding: 16px; border-radius: 6px; margin: 16px 0;">
-      <p style="margin: 0 0 8px;"><strong>Kargo Firması:</strong> ${carrierName}</p>
-      <p style="margin: 0;"><strong>Takip Numarası:</strong> ${trackingNumber}</p>
+      <p style="margin: 0 0 8px;"><strong>Kargo Firması:</strong> ${escapeHtml(carrierName)}</p>
+      <p style="margin: 0;"><strong>Takip Numarası:</strong> ${escapeHtml(trackingNumber)}</p>
     </div>
 
     <h3>Teslimat Adresi</h3>
     <div class="address-box">
       <p style="margin: 0;">
-        ${order.shipping_address.address}<br>
-        ${order.shipping_address.district} / ${order.shipping_address.city}<br>
-        ${order.shipping_address.zipCode}
+        ${escapeHtml(order.shipping_address.address)}<br>
+        ${escapeHtml(order.shipping_address.district)} / ${escapeHtml(order.shipping_address.city)}<br>
+        ${escapeHtml(order.shipping_address.zipCode)}
       </p>
     </div>
 
     <p style="text-align: center;">
-      <a href="${SITE_URL}/siparis-takip?siparis=${order.order_number}" class="btn">
+      <a href="${SITE_URL}/siparis-takip?siparis=${encodeURIComponent(order.order_number)}" class="btn">
         Siparişimi Takip Et
       </a>
     </p>
@@ -345,9 +354,7 @@ export async function sendShippingNotification(
 
   try {
     await sgMail.send(msg)
-    console.log(`Shipping notification email sent to ${customer.email}`)
   } catch (error) {
-    console.error('Error sending shipping notification email:', error)
     throw error
   }
 }
@@ -357,12 +364,12 @@ export async function sendDeliveryNotification(
   customer: Customer,
   order: Order
 ): Promise<void> {
-  const customerName = customer.first_name ? `${customer.first_name} ${customer.last_name || ''}`.trim() : 'Değerli Müşterimiz'
+  const customerName = customer.first_name ? escapeHtml(`${customer.first_name} ${customer.last_name || ''}`.trim()) : 'Değerli Müşterimiz'
 
   const content = `
     <h2 style="margin-top: 0;">Siparişiniz Teslim Edildi! ✅</h2>
     <p>Merhaba ${customerName},</p>
-    <p><strong>${order.order_number}</strong> numaralı siparişiniz başarıyla teslim edildi.</p>
+    <p><strong>${escapeHtml(order.order_number)}</strong> numaralı siparişiniz başarıyla teslim edildi.</p>
 
     <div style="background: #d4edda; padding: 16px; border-radius: 6px; margin: 16px 0; text-align: center;">
       <span class="status-badge status-delivered">Teslim Edildi</span>
@@ -391,9 +398,7 @@ export async function sendDeliveryNotification(
 
   try {
     await sgMail.send(msg)
-    console.log(`Delivery notification email sent to ${customer.email}`)
   } catch (error) {
-    console.error('Error sending delivery notification email:', error)
     throw error
   }
 }
@@ -409,13 +414,13 @@ export async function sendPaymentReceipt(
     paidAt: string
   }
 ): Promise<void> {
-  const customerName = customer.first_name ? `${customer.first_name} ${customer.last_name || ''}`.trim() : 'Değerli Müşterimiz'
+  const customerName = customer.first_name ? escapeHtml(`${customer.first_name} ${customer.last_name || ''}`.trim()) : 'Değerli Müşterimiz'
 
   const itemsHtml = items
     .map(
       (item) => `
       <tr>
-        <td>${item.product_name}${item.variant_name ? ` - ${item.variant_name}` : ''}</td>
+        <td>${escapeHtml(item.product_name)}${item.variant_name ? ` - ${escapeHtml(item.variant_name)}` : ''}</td>
         <td style="text-align: center;">${item.quantity}</td>
         <td style="text-align: right;">${formatCurrency(item.total_price)}</td>
       </tr>
@@ -432,7 +437,7 @@ export async function sendPaymentReceipt(
       <table style="width: 100%;">
         <tr>
           <td><strong>Sipariş No:</strong></td>
-          <td style="text-align: right;">${order.order_number}</td>
+          <td style="text-align: right;">${escapeHtml(order.order_number)}</td>
         </tr>
         <tr>
           <td><strong>Ödeme Tarihi:</strong></td>
@@ -498,9 +503,7 @@ export async function sendPaymentReceipt(
 
   try {
     await sgMail.send(msg)
-    console.log(`Payment receipt email sent to ${customer.email}`)
   } catch (error) {
-    console.error('Error sending payment receipt email:', error)
     throw error
   }
 }
@@ -511,16 +514,16 @@ export async function sendOrderCancellation(
   order: Order,
   reason?: string
 ): Promise<void> {
-  const customerName = customer.first_name ? `${customer.first_name} ${customer.last_name || ''}`.trim() : 'Değerli Müşterimiz'
+  const customerName = customer.first_name ? escapeHtml(`${customer.first_name} ${customer.last_name || ''}`.trim()) : 'Değerli Müşterimiz'
 
   const content = `
     <h2 style="margin-top: 0;">Siparişiniz İptal Edildi</h2>
     <p>Merhaba ${customerName},</p>
-    <p><strong>${order.order_number}</strong> numaralı siparişiniz iptal edilmiştir.</p>
+    <p><strong>${escapeHtml(order.order_number)}</strong> numaralı siparişiniz iptal edilmiştir.</p>
 
     ${reason ? `
     <div style="background: #fff3cd; padding: 16px; border-radius: 6px; margin: 16px 0;">
-      <strong>İptal Nedeni:</strong> ${reason}
+      <strong>İptal Nedeni:</strong> ${escapeHtml(reason)}
     </div>
     ` : ''}
 
@@ -542,9 +545,7 @@ export async function sendOrderCancellation(
 
   try {
     await sgMail.send(msg)
-    console.log(`Order cancellation email sent to ${customer.email}`)
   } catch (error) {
-    console.error('Error sending order cancellation email:', error)
     throw error
   }
 }

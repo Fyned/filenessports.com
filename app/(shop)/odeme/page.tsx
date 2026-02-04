@@ -240,7 +240,8 @@ export default function CheckoutPage() {
 
       if (data.success && data.threeDSHtmlContent) {
         // 3D Secure sayfasına yönlendir
-        clearCart()
+        // NOT: Sepet BURADA TEMİZLENMEMELİ! Ödeme başarısız olursa kullanıcı sepetini kaybeder
+        // Sepet başarılı ödeme sonrası /odeme/basarili sayfasında temizlenecek
 
         // 3D Secure HTML'ini yeni pencerede aç
         const newWindow = window.open('', '_self')
