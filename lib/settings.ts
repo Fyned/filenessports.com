@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 
 export interface SiteSettings {
   free_shipping_threshold: number
@@ -32,8 +32,12 @@ const defaultSettings: SiteSettings = {
 
 export async function getSiteSettings(): Promise<SiteSettings> {
   try {
-    const supabase = await createClient()
-    const { data, error } = await supabase
+    // Check if supabaseAdmin is available (env vars set)
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      return defaultSettings
+    }
+
+    const { data, error } = await supabaseAdmin
       .from('site_settings')
       .select('key, value')
 
