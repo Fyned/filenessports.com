@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import {
   AlertDialog,
@@ -28,11 +27,8 @@ interface DeleteBannerButtonProps {
 export function DeleteBannerButton({
   bannerId,
   bannerTitle,
-  imageUrl,
-  mobileImageUrl,
 }: DeleteBannerButtonProps) {
   const router = useRouter()
-  const supabase = createClient()
   const [deleting, setDeleting] = useState(false)
   const [open, setOpen] = useState(false)
 
@@ -40,32 +36,20 @@ export function DeleteBannerButton({
     setDeleting(true)
 
     try {
-      // Delete images from storage
-      const pathsToDelete: string[] = []
+      const response = await fetch(`/api/admin/banners/${bannerId}`, {
+        method: 'DELETE',
+      })
 
-      if (imageUrl) {
-        const path = imageUrl.split('/banners/')[1]
-        if (path) pathsToDelete.push(path)
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Banner silinemedi')
       }
-
-      if (mobileImageUrl) {
-        const path = mobileImageUrl.split('/banners/')[1]
-        if (path) pathsToDelete.push(path)
-      }
-
-      if (pathsToDelete.length > 0) {
-        await supabase.storage.from('banners').remove(pathsToDelete)
-      }
-
-      const { error } = await supabase.from('banners').delete().eq('id', bannerId)
-
-      if (error) throw error
 
       toast.success('Banner başarıyla silindi')
       router.refresh()
     } catch (error) {
       console.error('Error deleting banner:', error)
-      toast.error('Banner silinirken hata oluştu')
+      toast.error(error instanceof Error ? error.message : 'Banner silinirken hata oluştu')
     } finally {
       setDeleting(false)
       setOpen(false)
