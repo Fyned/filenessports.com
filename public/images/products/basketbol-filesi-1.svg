@@ -1,0 +1,31 @@
+<svg width="800" height="800" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="800" fill="#f5f5f5"/>
+  <!-- Backboard -->
+  <rect x="250" y="100" width="300" height="180" fill="white" stroke="#1C2840" stroke-width="4"/>
+  <rect x="340" y="150" width="120" height="80" fill="none" stroke="#BB1624" stroke-width="3"/>
+  <!-- Rim -->
+  <ellipse cx="400" cy="280" rx="60" ry="15" fill="none" stroke="#BB1624" stroke-width="6"/>
+  <!-- Net -->
+  <g stroke="#fff" stroke-width="3">
+    <line x1="345" y1="290" x2="360" y2="400"/>
+    <line x1="365" y1="290" x2="375" y2="420"/>
+    <line x1="385" y1="290" x2="390" y2="430"/>
+    <line x1="400" y1="290" x2="400" y2="435"/>
+    <line x1="415" y1="290" x2="410" y2="430"/>
+    <line x1="435" y1="290" x2="425" y2="420"/>
+    <line x1="455" y1="290" x2="440" y2="400"/>
+  </g>
+  <g stroke="#ccc" stroke-width="2">
+    <path d="M360 330 Q400 340 440 330" fill="none"/>
+    <path d="M365 360 Q400 375 435 360" fill="none"/>
+    <path d="M375 390 Q400 410 425 390" fill="none"/>
+    <path d="M385 420 Q400 435 415 420" fill="none"/>
+  </g>
+  <!-- Basketball -->
+  <circle cx="400" cy="580" r="70" fill="#FF6B35" stroke="#1C2840" stroke-width="3"/>
+  <line x1="400" y1="510" x2="400" y2="650" stroke="#1C2840" stroke-width="3"/>
+  <line x1="330" y1="580" x2="470" y2="580" stroke="#1C2840" stroke-width="3"/>
+  <path d="M355 520 Q400 560 355 640" stroke="#1C2840" stroke-width="3" fill="none"/>
+  <path d="M445 520 Q400 560 445 640" stroke="#1C2840" stroke-width="3" fill="none"/>
+  <text x="400" y="720" text-anchor="middle" font-family="Arial" font-size="28" font-weight="bold" fill="#1C2840">Basketbol Pota Filesi</text>
+</svg>

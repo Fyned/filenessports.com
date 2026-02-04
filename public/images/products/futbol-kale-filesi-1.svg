@@ -1,0 +1,28 @@
+<svg width="800" height="800" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="800" fill="#f5f5f5"/>
+  <rect x="100" y="150" width="600" height="400" rx="8" fill="#1C2840"/>
+  <rect x="120" y="170" width="560" height="360" rx="4" fill="#f5f5f5" stroke="#BB1624" stroke-width="4"/>
+  <!-- Net pattern -->
+  <g stroke="#666" stroke-width="2" opacity="0.5">
+    <line x1="120" y1="220" x2="680" y2="220"/>
+    <line x1="120" y1="270" x2="680" y2="270"/>
+    <line x1="120" y1="320" x2="680" y2="320"/>
+    <line x1="120" y1="370" x2="680" y2="370"/>
+    <line x1="120" y1="420" x2="680" y2="420"/>
+    <line x1="120" y1="470" x2="680" y2="470"/>
+    <line x1="170" y1="170" x2="170" y2="530"/>
+    <line x1="220" y1="170" x2="220" y2="530"/>
+    <line x1="270" y1="170" x2="270" y2="530"/>
+    <line x1="320" y1="170" x2="320" y2="530"/>
+    <line x1="370" y1="170" x2="370" y2="530"/>
+    <line x1="420" y1="170" x2="420" y2="530"/>
+    <line x1="470" y1="170" x2="470" y2="530"/>
+    <line x1="520" y1="170" x2="520" y2="530"/>
+    <line x1="570" y1="170" x2="570" y2="530"/>
+    <line x1="620" y1="170" x2="620" y2="530"/>
+  </g>
+  <!-- Football -->
+  <circle cx="400" cy="620" r="50" fill="white" stroke="#1C2840" stroke-width="3"/>
+  <path d="M400 570 L420 590 L415 620 L385 620 L380 590 Z" fill="#1C2840"/>
+  <text x="400" y="720" text-anchor="middle" font-family="Arial" font-size="28" font-weight="bold" fill="#1C2840">Futbol Kale Filesi</text>
+</svg>

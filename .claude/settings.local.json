@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npx shadcn@latest init:*)",
+      "Bash(npx shadcn@latest add button card input select dialog dropdown-menu table tabs toast badge avatar separator sheet accordion checkbox label textarea skeleton form switch popover command -y)",
+      "Bash(npx shadcn@latest add button card input select dialog dropdown-menu table tabs sonner badge avatar separator sheet accordion checkbox label textarea skeleton form switch popover command -y)",
+      "Bash(npm run build:*)",
+      "Bash(timeout:*)",
+      "Bash(curl:*)",
+      "Bash(del \"C:\\\\Projects\\\\file-atolyesi-clone\\\\app\\\\page.tsx\")",
+      "Bash(npx tsx:*)",
+      "Bash(taskkill:*)",
+      "Bash(Get-Process -Name \"node\" -ErrorAction SilentlyContinue)",
+      "Bash(Stop-Process -Force)",
+      "Bash(Start-Sleep -Seconds 2)",
+      "Bash(pkill:*)",
+      "Bash(ls:*)",
+      "Bash(npx shadcn@latest add radio-group:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(powershell -Command:*)",
+      "Bash(npx supabase:*)",
+      "Bash(npx ts-node:*)",
+      "Bash(dir:*)",
+      "Bash(npx shadcn@latest add slider:*)",
+      "Bash(head:*)",
+      "Bash(tasklist:*)",
+      "Bash(npm run dev:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}
