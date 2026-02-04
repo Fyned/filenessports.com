@@ -3,13 +3,23 @@ import { createClient } from '@supabase/supabase-js'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
+  // Check if environment variables are set
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    // Skip middleware if env vars are not set (during build)
+    return NextResponse.next()
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   })
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseAnonKey,
     {
       cookies: {
         getAll() {
@@ -40,13 +50,7 @@ export async function middleware(request: NextRequest) {
 
   // Protect admin routes
   if (request.nextUrl.pathname.startsWith('/admin')) {
-    console.log('=== ADMIN ROUTE DEBUG ===')
-    console.log('Pathname:', request.nextUrl.pathname)
-    console.log('User:', user ? { id: user.id, email: user.email } : 'null')
-
     if (!user) {
-      console.log('REDIRECT REASON: User is null - redirecting to /giris')
-      console.log('Cookies present:', request.cookies.getAll().map(c => c.name))
       const url = request.nextUrl.clone()
       url.pathname = '/giris'
       url.searchParams.set('redirect', request.nextUrl.pathname)
@@ -58,10 +62,15 @@ export async function middleware(request: NextRequest) {
       return redirectResponse
     }
 
+    // Skip admin role check if service key is not available
+    if (!supabaseServiceKey) {
+      return supabaseResponse
+    }
+
     // Use admin client to bypass RLS for role check
     const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      supabaseUrl,
+      supabaseServiceKey,
       {
         auth: {
           autoRefreshToken: false,
@@ -71,25 +80,18 @@ export async function middleware(request: NextRequest) {
     )
 
     // Check if user has admin role using admin client (bypasses RLS)
-    const { data: profile, error: profileError } = await supabaseAdmin
+    const { data: profile } = await supabaseAdmin
       .from('user_profiles')
       .select('role')
       .eq('id', user.id)
       .single()
 
-    console.log('Profile Query Result:', { profile, error: profileError?.message })
-    console.log('Role Check:', profile?.role === 'admin' ? 'PASS' : 'FAIL')
-
     if (!profile || profile.role !== 'admin') {
-      console.log('REDIRECT REASON: Profile not found or role is not admin')
-      console.log('Profile:', profile)
       // User is not admin, redirect to home
       const url = request.nextUrl.clone()
       url.pathname = '/'
       return NextResponse.redirect(url)
     }
-
-    console.log('ADMIN ACCESS GRANTED')
   }
 
   return supabaseResponse

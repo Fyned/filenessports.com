@@ -28,7 +28,12 @@
       "Bash(head:*)",
       "Bash(tasklist:*)",
       "Bash(npm run dev:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nFilenes Sports E-commerce Platform - Full Implementation\n\nFeatures:\n- Next.js 16 + React 19 + TypeScript\n- Supabase authentication and database\n- Admin panel with dashboard, products, orders, customers management\n- Puck page editor for visual page building\n- Shopping cart with Zustand state management\n- Turkish localization\n- RLS policies for security\n- Banner management system\n- Blog system\n- SendGrid email integration\n- Responsive design with Tailwind CSS\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git branch:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nFix middleware for production deployment\n\n- Add environment variable checks to prevent errors during build\n- Remove debug console.log statements\n- Handle missing service role key gracefully\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
     ]
   }
 }
