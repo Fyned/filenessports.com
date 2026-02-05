@@ -249,22 +249,6 @@ export function Header({ freeShippingThreshold = 500 }: HeaderProps) {
                   </Link>
                 </li>
               ))}
-              <li className="ml-auto">
-                <Link
-                  href="/hakkimizda"
-                  className="flex items-center gap-1 px-4 py-4 text-white font-medium hover:bg-[#2A3A5A] transition-colors"
-                >
-                  Hakkımızda
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/iletisim"
-                  className="flex items-center gap-1 px-4 py-4 text-white font-medium hover:bg-[#2A3A5A] transition-colors"
-                >
-                  İletişim
-                </Link>
-              </li>
             </ul>
           </div>
         </nav>
@@ -356,24 +340,6 @@ export function Header({ freeShippingThreshold = 500 }: HeaderProps) {
                 </Link>
               </li>
             ))}
-            <li>
-              <Link
-                href="/hakkimizda"
-                onClick={closeMobileMenu}
-                className="block px-4 py-3 text-[#1C2840] hover:bg-gray-100 transition-colors border-b"
-              >
-                Hakkımızda
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/iletisim"
-                onClick={closeMobileMenu}
-                className="block px-4 py-3 text-[#1C2840] hover:bg-gray-100 transition-colors border-b"
-              >
-                İletişim
-              </Link>
-            </li>
           </ul>
 
           {/* Mobile Menu Footer */}
