@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "watermark": "tsx scripts/add-watermark.ts",
+    "seed": "dotenv -e .env.local -- tsx scripts/seed-categories-products.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

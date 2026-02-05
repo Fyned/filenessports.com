@@ -36,58 +36,49 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
 }
 
 export default async function CategoryPage({ params, searchParams }: CategoryPageProps) {
-  const { slug } = await params
-  const search = await searchParams
-  const supabase = await getSupabaseAdmin()
+  try {
+    const { slug } = await params
+    const search = await searchParams
+    const supabase = await getSupabaseAdmin()
 
-  // Fetch category
-  const { data: category, error: catError } = await supabase
-    .from('categories')
-    .select('*')
-    .eq('slug', slug)
-    .eq('is_active', true)
-    .single()
+    // Fetch category
+    const { data: category, error: catError } = await supabase
+      .from('categories')
+      .select('*')
+      .eq('slug', slug)
+      .eq('is_active', true)
+      .single()
 
-  console.log('Category fetch:', { slug, category: category?.name, catError })
+    if (!category || catError) {
+      notFound()
+    }
 
-  if (!category) {
-    notFound()
-  }
+    const page = parseInt(search.sayfa || '1')
+    const perPage = 12
+    const offset = (page - 1) * perPage
 
-  const page = parseInt(search.sayfa || '1')
-  const perPage = 12
-  const offset = (page - 1) * perPage
+    // Fetch subcategories
+    const { data: subcategories } = await supabase
+      .from('categories')
+      .select('*')
+      .eq('parent_id', category.id)
+      .eq('is_active', true)
+      .order('sort_order')
 
-  // Fetch subcategories
-  const { data: subcategories } = await supabase
-    .from('categories')
-    .select('*')
-    .eq('parent_id', category.id)
-    .eq('is_active', true)
-    .order('sort_order')
+    // Fetch products
+    const { data: products, count } = await supabase
+      .from('products')
+      .select(`
+        *,
+        category:categories(id, name, slug),
+        images:product_images(id, url, alt, is_primary)
+      `, { count: 'exact' })
+      .eq('category_id', category.id)
+      .eq('is_active', true)
+      .order('created_at', { ascending: false })
+      .range(offset, offset + perPage - 1)
 
-  // Fetch products
-  const { data: products, error: prodError, count } = await supabase
-    .from('products')
-    .select(`
-      *,
-      category:categories(id, name, slug),
-      images:product_images(id, url, alt, is_primary)
-    `, { count: 'exact' })
-    .eq('category_id', category.id)
-    .eq('is_active', true)
-    .order('created_at', { ascending: false })
-    .range(offset, offset + perPage - 1)
-
-  console.log('Products fetch:', {
-    categoryId: category.id,
-    count,
-    productsLength: products?.length,
-    prodError,
-    firstProduct: products?.[0]?.name
-  })
-
-  const totalPages = Math.ceil((count || 0) / perPage)
+    const totalPages = Math.ceil((count || 0) / perPage)
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -234,4 +225,22 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
       </div>
     </div>
   )
+  } catch (error) {
+    console.error('Category page error:', error)
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center py-16 bg-white rounded-lg shadow-sm p-8 max-w-md">
+          <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <h1 className="text-xl font-bold text-gray-800 mb-2">Sayfa Yüklenemedi</h1>
+          <p className="text-gray-600 mb-6">Kategori bilgileri yüklenirken bir sorun oluştu.</p>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 bg-[#BB1624] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#8F101B] transition-colors"
+          >
+            Ana Sayfaya Dön
+          </Link>
+        </div>
+      </div>
+    )
+  }
 }
