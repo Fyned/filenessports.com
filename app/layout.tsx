@@ -25,9 +25,9 @@ export const metadata: Metadata = {
     'filenes sports',
   ],
   icons: {
-    icon: '/icon.svg',
-    shortcut: '/icon.svg',
-    apple: '/icon.svg',
+    icon: '/favicon-white.svg',
+    shortcut: '/favicon-white.svg',
+    apple: '/favicon-white.svg',
   },
 }
 
