@@ -43,7 +43,7 @@ export function CategoryProductBlock({
       quantity: 1,
       image: product.images?.[0] || '/images/placeholder.jpg',
       slug: product.slug,
-    })
+    } as Parameters<typeof addItem>[0])
     toast.success(`${product.name} sepete eklendi!`)
   }
 
