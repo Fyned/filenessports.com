@@ -108,17 +108,6 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
       <div className="bg-[#1C2840] text-white py-12">
         <div className="container mx-auto px-4">
           <div className="flex items-center gap-4">
-            {category.image && (
-              <div className="w-20 h-20 rounded-xl overflow-hidden bg-white/10">
-                <Image
-                  src={category.image}
-                  alt={category.name}
-                  width={80}
-                  height={80}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            )}
             <div>
               <h1 className="text-3xl md:text-4xl font-bold">{category.name}</h1>
               {category.description && (
