@@ -75,30 +75,41 @@ export default async function HomePage() {
     .eq('is_active', true)
     .order('sort_order', { ascending: true })
 
-  // Fetch products by category
-  const { data: kaleProducts } = await supabaseAdmin
-    .from('products')
-    .select('id, name, slug, price, compare_price, images, short_description, is_new, is_featured')
-    .eq('is_active', true)
-    .eq('category_id', categories?.find(c => c.slug === 'kale-fileleri')?.id || '')
-    .order('created_at', { ascending: false })
-    .limit(12)
+  // Kategori ID'lerini bul
+  const kaleCategory = categories?.find(c => c.slug === 'kale-fileleri')
+  const kapamaCategory = categories?.find(c => c.slug === 'kapama-fileleri')
+  const tavanCategory = categories?.find(c => c.slug === 'tavan-fileleri')
 
-  const { data: kapamaProducts } = await supabaseAdmin
-    .from('products')
-    .select('id, name, slug, price, compare_price, images, short_description, is_new, is_featured')
-    .eq('is_active', true)
-    .eq('category_id', categories?.find(c => c.slug === 'kapama-fileleri')?.id || '')
-    .order('created_at', { ascending: false })
-    .limit(12)
+  // Fetch products by category - sadece kategori varsa sorgula
+  const { data: kaleProducts } = kaleCategory
+    ? await supabaseAdmin
+        .from('products')
+        .select('id, name, slug, price, compare_price, images, short_description, is_new, is_featured')
+        .eq('is_active', true)
+        .eq('category_id', kaleCategory.id)
+        .order('created_at', { ascending: false })
+        .limit(12)
+    : { data: [] }
 
-  const { data: tavanProducts } = await supabaseAdmin
-    .from('products')
-    .select('id, name, slug, price, compare_price, images, short_description, is_new, is_featured')
-    .eq('is_active', true)
-    .eq('category_id', categories?.find(c => c.slug === 'tavan-fileleri')?.id || '')
-    .order('created_at', { ascending: false })
-    .limit(12)
+  const { data: kapamaProducts } = kapamaCategory
+    ? await supabaseAdmin
+        .from('products')
+        .select('id, name, slug, price, compare_price, images, short_description, is_new, is_featured')
+        .eq('is_active', true)
+        .eq('category_id', kapamaCategory.id)
+        .order('created_at', { ascending: false })
+        .limit(12)
+    : { data: [] }
+
+  const { data: tavanProducts } = tavanCategory
+    ? await supabaseAdmin
+        .from('products')
+        .select('id, name, slug, price, compare_price, images, short_description, is_new, is_featured')
+        .eq('is_active', true)
+        .eq('category_id', tavanCategory.id)
+        .order('created_at', { ascending: false })
+        .limit(12)
+    : { data: [] }
 
   // Fetch blog posts
   const { data: blogPosts } = await supabaseAdmin
