@@ -4,7 +4,6 @@ import { Product, Category } from '@/types/database'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import Image from 'next/image'
 import { Suspense } from 'react'
 import { CategorySortSelect } from './SortSelect'
 import { Package, ChevronLeft, ChevronRight, Grid3X3 } from 'lucide-react'
@@ -15,23 +14,27 @@ interface CategoryPageProps {
 }
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
-  const { slug } = await params
-  const supabaseAdmin = await getSupabaseAdmin()
+  try {
+    const { slug } = await params
+    const supabaseAdmin = await getSupabaseAdmin()
 
-  const { data: category } = await supabaseAdmin
-    .from('categories')
-    .select('name, description, meta_title, meta_description')
-    .eq('slug', slug)
-    .eq('is_active', true)
-    .single()
+    const { data: category } = await supabaseAdmin
+      .from('categories')
+      .select('name, description, meta_title, meta_description')
+      .eq('slug', slug)
+      .eq('is_active', true)
+      .single()
 
-  if (!category) {
-    return { title: 'Kategori Bulunamadı - Filenes Sports' }
-  }
+    if (!category) {
+      return { title: 'Kategori Bulunamadı - Filenes Sports' }
+    }
 
-  return {
-    title: category.meta_title || `${category.name} - Filenes Sports`,
-    description: category.meta_description || category.description || '',
+    return {
+      title: category.meta_title || `${category.name} - Filenes Sports`,
+      description: category.meta_description || category.description || '',
+    }
+  } catch {
+    return { title: 'Kategori - Filenes Sports' }
   }
 }
 
