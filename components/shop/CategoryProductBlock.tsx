@@ -5,8 +5,9 @@ import Image from 'next/image'
 import { ArrowRight, ShoppingCart, Star } from 'lucide-react'
 import { useCartStore } from '@/stores/cart-store'
 import { toast } from 'sonner'
+import { Product as FullProduct } from '@/types/database'
 
-interface Product {
+interface SimpleProduct {
   id: string
   name: string
   slug: string
@@ -21,7 +22,7 @@ interface Product {
 interface CategoryProductBlockProps {
   title: string
   description: string
-  products: Product[]
+  products: SimpleProduct[]
   categorySlug: string
   bgColor?: 'white' | 'gray'
 }
@@ -35,15 +36,36 @@ export function CategoryProductBlock({
 }: CategoryProductBlockProps) {
   const addItem = useCartStore((state) => state.addItem)
 
-  const handleAddToCart = (product: Product) => {
-    addItem({
+  const handleAddToCart = (product: SimpleProduct) => {
+    // Convert SimpleProduct to FullProduct for cart
+    const fullProduct: FullProduct = {
       id: product.id,
       name: product.name,
-      price: product.price,
-      quantity: 1,
-      image: product.images?.[0] || '/images/placeholder.jpg',
       slug: product.slug,
-    } as Parameters<typeof addItem>[0])
+      price: product.price,
+      compare_price: product.compare_price || null,
+      description: null,
+      short_description: product.short_description || null,
+      cost_price: null,
+      sku: null,
+      barcode: null,
+      stock: 100,
+      low_stock_threshold: 10,
+      category_id: null,
+      brand: null,
+      weight: null,
+      dimensions: null,
+      is_active: true,
+      is_featured: product.is_featured || false,
+      is_new: product.is_new || false,
+      free_shipping: false,
+      meta_title: null,
+      meta_description: null,
+      tags: null,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    }
+    addItem(fullProduct)
     toast.success(`${product.name} sepete eklendi!`)
   }
 
@@ -93,8 +115,8 @@ export function CategoryProductBlock({
 }
 
 interface ProductCardProps {
-  product: Product
-  onAddToCart: (product: Product) => void
+  product: SimpleProduct
+  onAddToCart: (product: SimpleProduct) => void
 }
 
 function ProductCard({ product, onAddToCart }: ProductCardProps) {
