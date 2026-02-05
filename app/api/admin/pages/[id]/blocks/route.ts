@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase/admin'
+import { getSupabaseAdmin } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 
 interface RouteParams {
@@ -10,6 +10,7 @@ interface RouteParams {
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params
+    const supabaseAdmin = await getSupabaseAdmin()
 
     const { data, error } = await supabaseAdmin
       .from('page_blocks')
@@ -33,6 +34,8 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 // POST - Sayfa bloklarını kaydet
 export async function POST(request: NextRequest, { params }: RouteParams) {
   try {
+    const supabaseAdmin = await getSupabaseAdmin()
+
     // Kullanıcının admin olup olmadığını kontrol et
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()

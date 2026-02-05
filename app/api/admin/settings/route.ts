@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase/admin'
+import { getSupabaseAdmin } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 
 // GET - Tüm ayarları getir
 export async function GET() {
   try {
+    const supabaseAdmin = await getSupabaseAdmin()
     const { data, error } = await supabaseAdmin
       .from('site_settings')
       .select('key, value')
@@ -21,6 +22,8 @@ export async function GET() {
 // POST - Ayarları kaydet
 export async function POST(request: NextRequest) {
   try {
+    const supabaseAdmin = await getSupabaseAdmin()
+
     // Kullanıcının admin olup olmadığını kontrol et
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()

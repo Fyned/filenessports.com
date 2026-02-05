@@ -1,26 +1,15 @@
 import { Render } from '@puckeditor/core'
 import { puckConfig } from '@/lib/puck/config'
 import { createClient } from '@/lib/supabase/server'
-import { supabaseAdmin } from '@/lib/supabase/admin'
+import { getSupabaseAdmin } from '@/lib/supabase/admin'
 import { Metadata } from 'next'
-import { Truck, MessageCircle, Shield, RefreshCcw, Phone, ArrowRight, ChevronRight } from 'lucide-react'
+import { Truck, MessageCircle, Shield, RefreshCcw, ArrowRight, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { getSiteSettings } from '@/lib/settings'
-import { HeroSlider } from '@/components/shop/HeroSlider'
-import { ProductSlider } from '@/components/shop/ProductSlider'
-
-interface Banner {
-  id: string
-  title: string | null
-  subtitle: string | null
-  image_url: string
-  mobile_image_url: string | null
-  link: string | null
-  button_text: string | null
-  background_color: string | null
-  text_color: string | null
-}
+import { StaticHeroSlider } from '@/components/shop/StaticHeroSlider'
+import { PromoBannerGrid } from '@/components/shop/PromoBannerGrid'
+import { CategoryProductBlock } from '@/components/shop/CategoryProductBlock'
+import { CustomOrderBanner } from '@/components/shop/FullWidthPromoBanner'
 
 interface Product {
   id: string
@@ -28,7 +17,7 @@ interface Product {
   slug: string
   price: number
   compare_price?: number | null
-  images: string[]
+  images?: string[]
   short_description?: string
   is_new?: boolean
   is_featured?: boolean
@@ -38,7 +27,6 @@ interface Category {
   id: string
   name: string
   slug: string
-  image: string | null
   description: string | null
 }
 
@@ -58,20 +46,13 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   const supabase = await createClient()
+  const supabaseAdmin = await getSupabaseAdmin()
   const settings = await getSiteSettings()
 
-  // Fetch hero banners
-  const { data: banners } = await supabaseAdmin
-    .from('banners')
-    .select('id, title, subtitle, image_url, mobile_image_url, link, button_text, background_color, text_color')
-    .eq('position', 'hero')
-    .eq('is_active', true)
-    .order('sort_order', { ascending: true })
-
-  // Fetch all active categories
-  const { data: categories } = await supabaseAdmin
+  // Fetch all active categories (image sütunu veritabanında yok)
+  const { data: categories, error: catError } = await supabaseAdmin
     .from('categories')
-    .select('id, name, slug, image, description')
+    .select('id, name, slug, description')
     .eq('is_active', true)
     .order('sort_order', { ascending: true })
 
@@ -80,35 +61,35 @@ export default async function HomePage() {
   const kapamaCategory = categories?.find(c => c.slug === 'kapama-fileleri')
   const tavanCategory = categories?.find(c => c.slug === 'tavan-fileleri')
 
-  // Fetch products by category - sadece kategori varsa sorgula
+  // Fetch products by category - her kategori için 8 ürün çek
   const { data: kaleProducts } = kaleCategory
     ? await supabaseAdmin
         .from('products')
-        .select('id, name, slug, price, compare_price, images, short_description, is_new, is_featured')
+        .select('id, name, slug, price, compare_price, short_description, is_new, is_featured')
         .eq('is_active', true)
         .eq('category_id', kaleCategory.id)
         .order('created_at', { ascending: false })
-        .limit(12)
+        .limit(8)
     : { data: [] }
 
   const { data: kapamaProducts } = kapamaCategory
     ? await supabaseAdmin
         .from('products')
-        .select('id, name, slug, price, compare_price, images, short_description, is_new, is_featured')
+        .select('id, name, slug, price, compare_price, short_description, is_new, is_featured')
         .eq('is_active', true)
         .eq('category_id', kapamaCategory.id)
         .order('created_at', { ascending: false })
-        .limit(12)
+        .limit(8)
     : { data: [] }
 
   const { data: tavanProducts } = tavanCategory
     ? await supabaseAdmin
         .from('products')
-        .select('id, name, slug, price, compare_price, images, short_description, is_new, is_featured')
+        .select('id, name, slug, price, compare_price, short_description, is_new, is_featured')
         .eq('is_active', true)
         .eq('category_id', tavanCategory.id)
         .order('created_at', { ascending: false })
-        .limit(12)
+        .limit(8)
     : { data: [] }
 
   // Fetch blog posts
@@ -135,12 +116,8 @@ export default async function HomePage() {
 
   return (
     <div>
-      {/* Hero Section */}
-      {banners && banners.length > 0 ? (
-        <HeroSlider banners={banners} />
-      ) : (
-        <DefaultHero />
-      )}
+      {/* Hero Section - Görsel bağımsız statik slider */}
+      <StaticHeroSlider />
 
       {/* Features Bar */}
       <section className="py-8 bg-white border-b">
@@ -176,68 +153,44 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Kale Fileleri Slider */}
+      {/* ⭐ YENİ: Promosyon Banner Grid (4'lü) */}
+      <PromoBannerGrid />
+
+      {/* ⭐ KALE FİLELERİ - File Atölyesi tarzı */}
       {kaleProducts && kaleProducts.length > 0 && (
-        <ProductSlider
-          title="⚽ Kale Fileleri"
+        <CategoryProductBlock
+          title="KALE FİLESİ"
+          description="Tüm standartlara uygun ve her alanda ihtiyaç duyulan, kalelerin vazgeçilmezi olan ürünleri inceleyin!"
           products={kaleProducts as Product[]}
           categorySlug="kale-fileleri"
-          categoryName="Kale Fileleri"
           bgColor="white"
         />
       )}
 
-      {/* Kapama Fileleri Slider */}
+      {/* ⭐ KAPAMA FİLELERİ */}
       {kapamaProducts && kapamaProducts.length > 0 && (
-        <ProductSlider
-          title="🏟️ Kapama Fileleri"
+        <CategoryProductBlock
+          title="KAPAMA FİLESİ"
+          description="Spor sahaları, balkonlar ve açık alanlar için profesyonel kapama fileleri. Güvenlik ve estetik bir arada!"
           products={kapamaProducts as Product[]}
           categorySlug="kapama-fileleri"
-          categoryName="Kapama Fileleri"
           bgColor="gray"
         />
       )}
 
-      {/* Tavan Fileleri Slider */}
+      {/* ⭐ TAVAN FİLELERİ */}
       {tavanProducts && tavanProducts.length > 0 && (
-        <ProductSlider
-          title="🏠 Tavan Fileleri"
+        <CategoryProductBlock
+          title="TAVAN FİLESİ"
+          description="İç mekan spor salonları için tavan koruma fileleri. Top kaçmasını önleyen profesyonel çözümler!"
           products={tavanProducts as Product[]}
           categorySlug="tavan-fileleri"
-          categoryName="Tavan Fileleri"
           bgColor="white"
         />
       )}
 
-      {/* Promo Banner */}
-      <section className="py-16 bg-gradient-to-r from-[#1C2840] via-[#2A3A5A] to-[#1C2840] text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          }} />
-        </div>
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="text-center md:text-left">
-              <span className="inline-block bg-[#BB1624] text-white text-sm font-bold px-4 py-1 rounded-full mb-4">🎯 ÖZEL SİPARİŞ</span>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Özel Ölçü mü İstiyorsunuz?</h2>
-              <p className="text-gray-300 text-lg max-w-lg">
-                Standart ölçüler size uymuyorsa, özel siparişleriniz için bizimle iletişime geçin!
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/iletisim" className="inline-flex items-center justify-center gap-2 bg-[#BB1624] hover:bg-[#8F101B] text-white px-8 py-4 rounded-full font-semibold text-lg transition-all hover:scale-105">
-                <Phone className="w-5 h-5" />
-                Bizi Arayın
-              </Link>
-              <Link href="/urunler" className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all border border-white/30">
-                Ürünleri İncele
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* ⭐ Özel Sipariş CTA Banner */}
+      <CustomOrderBanner />
 
       {/* Why Choose Us */}
       <section className="py-16 bg-gray-50">
@@ -310,43 +263,6 @@ export default async function HomePage() {
 }
 
 // Helper Components
-function DefaultHero() {
-  return (
-    <section className="relative bg-gradient-to-br from-[#1C2840] via-[#2A3A5A] to-[#1C2840] text-white py-24 overflow-hidden">
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-        }} />
-      </div>
-      <div className="container mx-auto px-4 text-center relative z-10">
-        <div className="inline-block bg-[#BB1624] text-white text-sm font-semibold px-4 py-2 rounded-full mb-6">
-          🏆 Türkiye&apos;nin 1 Numaralı File Üreticisi
-        </div>
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-          Profesyonel<br />
-          <span className="text-[#BB1624]">Spor Fileleri</span>
-        </h1>
-        <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-          Türkiye&apos;nin önde gelen spor ve güvenlik filesi üreticisi.
-          Kaliteli ürünlerimizle sahalarınızı güvende tutun.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/urunler" className="inline-flex items-center justify-center gap-2 bg-[#BB1624] hover:bg-[#8F101B] text-white px-8 py-4 rounded-full font-semibold text-lg transition-all hover:scale-105 shadow-lg">
-            Ürünleri İncele
-            <ArrowRight className="w-5 h-5" />
-          </Link>
-          <Link href="/iletisim" className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all backdrop-blur-sm border border-white/20">
-            <Phone className="w-5 h-5" />
-            Bizi Arayın
-          </Link>
-        </div>
-      </div>
-      <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-[#BB1624]/20 rounded-full blur-3xl" />
-      <div className="absolute -top-20 -right-20 w-80 h-80 bg-[#BB1624]/10 rounded-full blur-3xl" />
-    </section>
-  )
-}
-
 function FeatureItem({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
   return (
     <div className="flex items-center gap-3 p-3">
@@ -393,20 +309,11 @@ function CategoryCard({ category }: { category: Category }) {
   return (
     <Link href={`/kategori/${category.slug}`} className="group">
       <div className="relative overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
-        {/* Background Image or Gradient */}
+        {/* Background Gradient with Icon */}
         <div className={`h-48 bg-gradient-to-br ${getCategoryGradient(category.slug)} relative`}>
-          {category.image ? (
-            <Image
-              src={category.image}
-              alt={category.name}
-              fill
-              className="object-cover group-hover:scale-110 transition-transform duration-500"
-            />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-8xl opacity-30">{getCategoryIcon(category.slug)}</span>
-            </div>
-          )}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-8xl opacity-30">{getCategoryIcon(category.slug)}</span>
+          </div>
           {/* Overlay */}
           <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
 

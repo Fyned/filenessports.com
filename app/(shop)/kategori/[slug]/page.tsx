@@ -1,5 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
-import { supabaseAdmin } from '@/lib/supabase/admin'
+import { getSupabaseAdmin } from '@/lib/supabase/admin'
 import { ProductCard } from '@/components/shop/ProductCard'
 import { Product, Category } from '@/types/database'
 import { Metadata } from 'next'
@@ -17,6 +16,7 @@ interface CategoryPageProps {
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
   const { slug } = await params
+  const supabaseAdmin = await getSupabaseAdmin()
 
   const { data: category } = await supabaseAdmin
     .from('categories')
@@ -38,14 +38,17 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
 export default async function CategoryPage({ params, searchParams }: CategoryPageProps) {
   const { slug } = await params
   const search = await searchParams
+  const supabase = await getSupabaseAdmin()
 
   // Fetch category
-  const { data: category } = await supabaseAdmin
+  const { data: category, error: catError } = await supabase
     .from('categories')
     .select('*')
     .eq('slug', slug)
     .eq('is_active', true)
     .single()
+
+  console.log('Category fetch:', { slug, category: category?.name, catError })
 
   if (!category) {
     notFound()
@@ -56,15 +59,15 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   const offset = (page - 1) * perPage
 
   // Fetch subcategories
-  const { data: subcategories } = await supabaseAdmin
+  const { data: subcategories } = await supabase
     .from('categories')
     .select('*')
     .eq('parent_id', category.id)
     .eq('is_active', true)
     .order('sort_order')
 
-  // Build products query - use supabaseAdmin to bypass RLS
-  let query = supabaseAdmin
+  // Fetch products
+  const { data: products, error: prodError, count } = await supabase
     .from('products')
     .select(`
       *,
@@ -73,26 +76,17 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     `, { count: 'exact' })
     .eq('category_id', category.id)
     .eq('is_active', true)
+    .order('created_at', { ascending: false })
+    .range(offset, offset + perPage - 1)
 
-  // Sorting
-  switch (search.siralama) {
-    case 'fiyat-artan':
-      query = query.order('price', { ascending: true })
-      break
-    case 'fiyat-azalan':
-      query = query.order('price', { ascending: false })
-      break
-    case 'yeni':
-      query = query.order('created_at', { ascending: false })
-      break
-    default:
-      query = query.order('sort_order', { ascending: true }).order('created_at', { ascending: false })
-  }
+  console.log('Products fetch:', {
+    categoryId: category.id,
+    count,
+    productsLength: products?.length,
+    prodError,
+    firstProduct: products?.[0]?.name
+  })
 
-  // Pagination
-  query = query.range(offset, offset + perPage - 1)
-
-  const { data: products, count } = await query
   const totalPages = Math.ceil((count || 0) / perPage)
 
   return (

@@ -1,34 +1,19 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
-function createAdminClient(): SupabaseClient {
+// ASYNC fonksiyon - her call'da yeni client yaratır, CACHE YOK
+// Next.js 16 Server Components'de request isolation için gerekli
+export async function getSupabaseAdmin(): Promise<SupabaseClient> {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
   if (!supabaseUrl || !supabaseServiceKey) {
-    // Return a mock client that will fail gracefully
-    // This prevents build-time errors when env vars aren't available
-    return createClient(
-      'https://placeholder.supabase.co',
-      'placeholder-key',
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false
-        }
-      }
-    )
+    throw new Error('Missing Supabase environment variables for admin client')
   }
 
-  return createClient(
-    supabaseUrl,
-    supabaseServiceKey,
-    {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false
-      }
+  return createClient(supabaseUrl, supabaseServiceKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
     }
-  )
+  })
 }
-
-export const supabaseAdmin = createAdminClient()

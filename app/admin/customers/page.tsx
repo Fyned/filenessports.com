@@ -1,22 +1,29 @@
-import { createClient } from '@/lib/supabase/server'
+import { getSupabaseAdmin } from '@/lib/supabase/admin'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { CustomersTable } from './CustomersTable'
 
 export default async function AdminCustomersPage() {
-  const supabase = await createClient()
+  const supabaseAdmin = await getSupabaseAdmin()
 
-  const { data: customers } = await supabase
-    .from('customers')
-    .select(`
-      id,
-      first_name,
-      last_name,
-      email,
-      phone,
-      created_at,
-      orders:orders(count)
-    `)
-    .order('created_at', { ascending: false })
+  // Auth.users tablosundan kullanıcıları çek (admin harici)
+  const { data: authUsers } = await supabaseAdmin.auth.admin.listUsers()
+
+  // Admin hesabını filtrele ve müşteri formatına dönüştür
+  const customers = authUsers?.users
+    ?.filter(user => !user.email?.includes('admin@'))
+    ?.map(user => {
+      // user_metadata'dan isim bilgilerini al
+      const metadata = user.user_metadata || {}
+      return {
+        id: user.id,
+        first_name: metadata.first_name || metadata.name?.split(' ')[0] || user.email?.split('@')[0] || 'Müşteri',
+        last_name: metadata.last_name || metadata.name?.split(' ').slice(1).join(' ') || '',
+        email: user.email || '',
+        phone: metadata.phone || user.phone || null,
+        created_at: user.created_at,
+        orders: { count: 0 } // Sipariş sayısı ayrıca çekilebilir
+      }
+    }) || []
 
   return (
     <div className="space-y-6">

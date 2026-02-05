@@ -1,13 +1,12 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Phone, Mail, MapPin, Facebook, Instagram, Twitter, Youtube } from 'lucide-react'
+import { Phone, Mail, Facebook, Instagram, Twitter, Youtube } from 'lucide-react'
 
 interface SiteSettings {
   site_name?: string
   site_description?: string
   phone?: string
   email?: string
-  address?: string
   facebook?: string
   instagram?: string
   twitter?: string
@@ -18,10 +17,9 @@ interface SiteSettings {
 function getSettings(): SiteSettings {
   return {
     site_name: 'Filenes Sports',
-    site_description: "Türkiye'nin lider spor ve güvenlik filesi üreticisi. Futbol sahası fileleri, basketbol potası fileleri, voleybol ağları ve endüstriyel güvenlik fileleri konusunda 20 yıllık tecrübemizle hizmetinizdeyiz.",
-    phone: '0850 302 32 62',
+    site_description: "Türkiye'nin lider spor ve güvenlik filesi üreticisi.",
+    phone: '+90 541 885 56 76',
     email: 'info@fileenessports.com',
-    address: 'Filenes Sports\nOrganize Sanayi Bölgesi\n12. Cadde No: 34\nKocaeli, Türkiye',
     facebook: '',
     instagram: '',
     twitter: '',
@@ -34,10 +32,9 @@ export function Footer() {
 
   // Default values - Filenes Sports branding
   const siteName = settings.site_name || 'Filenes Sports'
-  const siteDescription = settings.site_description || "Türkiye'nin lider spor ve güvenlik filesi üreticisi. Futbol sahası fileleri, basketbol potası fileleri, voleybol ağları ve endüstriyel güvenlik fileleri konusunda 20 yıllık tecrübemizle hizmetinizdeyiz."
-  const phone = settings.phone || '0850 302 32 62'
+  const siteDescription = settings.site_description || "Türkiye'nin lider spor ve güvenlik filesi üreticisi."
+  const phone = settings.phone || '+90 541 885 56 76'
   const email = settings.email || 'info@fileenessports.com'
-  const address = settings.address || 'Filenes Sports\nOrganize Sanayi Bölgesi\n12. Cadde No: 34\nKocaeli, Türkiye'
   const facebook = settings.facebook || ''
   const instagram = settings.instagram || ''
   const twitter = settings.twitter || ''
@@ -208,12 +205,6 @@ export function Footer() {
                   {email}
                 </a>
               </li>
-              <li className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 mt-0.5 text-[#BB1624] flex-shrink-0" />
-                <span className="text-sm whitespace-pre-line">
-                  {address}
-                </span>
-              </li>
             </ul>
           </div>
         </div>
@@ -226,10 +217,18 @@ export function Footer() {
             <p className="text-sm text-gray-500">
               &copy; {new Date().getFullYear()} {siteName}. Tüm hakları saklıdır.
             </p>
-            <div className="flex items-center gap-4">
-              <Image src="/images/payment/visa.svg" alt="Visa" width={48} height={32} className="h-6 w-auto" />
-              <Image src="/images/payment/mastercard.svg" alt="Mastercard" width={48} height={32} className="h-6 w-auto" />
-              <Image src="/images/payment/troy.svg" alt="Troy" width={48} height={32} className="h-6 w-auto" />
+            <div className="flex items-center gap-2">
+              {/* Payment method badges - text based */}
+              <span className="bg-[#1A1F71] text-white text-xs font-bold px-3 py-1.5 rounded">
+                VISA
+              </span>
+              <span className="bg-[#EB001B] text-white text-xs font-bold px-2 py-1.5 rounded flex items-center gap-0.5">
+                <span className="w-4 h-4 bg-[#F79E1B] rounded-full -mr-1"></span>
+                <span className="w-4 h-4 bg-[#EB001B] rounded-full"></span>
+              </span>
+              <span className="bg-[#00A0E3] text-white text-xs font-bold px-3 py-1.5 rounded">
+                TROY
+              </span>
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/supabase/admin'
+import { getSupabaseAdmin } from '@/lib/supabase/admin'
 
 export interface SiteSettings {
   free_shipping_threshold: number
@@ -16,13 +16,13 @@ export interface SiteSettings {
 }
 
 const defaultSettings: SiteSettings = {
-  free_shipping_threshold: 500,
+  free_shipping_threshold: 5000,
   default_shipping_cost: 49.90,
   site_name: 'Filenes Sports',
   site_description: 'Profesyonel Spor ve Güvenlik Fileleri',
-  phone: '0850 302 32 62',
+  phone: '+90 541 885 56 76',
   email: 'info@fileenessports.com',
-  whatsapp: '',
+  whatsapp: '+905418855676',
   address: '',
   facebook: '',
   instagram: '',
@@ -37,6 +37,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       return defaultSettings
     }
 
+    const supabaseAdmin = await getSupabaseAdmin()
     const { data, error } = await supabaseAdmin
       .from('site_settings')
       .select('key, value')

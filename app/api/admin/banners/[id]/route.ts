@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase/admin'
+import { getSupabaseAdmin } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 
 // GET - Tek banner getir
@@ -9,6 +9,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params
+    const supabaseAdmin = await getSupabaseAdmin()
 
     const { data, error } = await supabaseAdmin
       .from('banners')
@@ -32,6 +33,7 @@ export async function PUT(
 ) {
   try {
     const { id } = await params
+    const supabaseAdmin = await getSupabaseAdmin()
 
     // Kullanıcının admin olup olmadığını kontrol et
     const supabase = await createClient()
@@ -91,6 +93,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
+    const supabaseAdmin = await getSupabaseAdmin()
 
     // Kullanıcının admin olup olmadığını kontrol et
     const supabase = await createClient()
