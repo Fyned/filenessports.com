@@ -3,12 +3,12 @@ import { puckConfig } from '@/lib/puck/config'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { Metadata } from 'next'
-import { Truck, MessageCircle, Shield, RefreshCcw, Phone, ArrowRight, Star, ChevronRight } from 'lucide-react'
+import { Truck, MessageCircle, Shield, RefreshCcw, Phone, ArrowRight, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { getSiteSettings } from '@/lib/settings'
 import { HeroSlider } from '@/components/shop/HeroSlider'
-import { ProductCard } from '@/components/shop/ProductCard'
+import { ProductSlider } from '@/components/shop/ProductSlider'
 
 interface Banner {
   id: string
@@ -27,9 +27,11 @@ interface Product {
   name: string
   slug: string
   price: number
-  compare_at_price: number | null
+  compare_price?: number | null
   images: string[]
-  category: { name: string; slug: string }[] | { name: string; slug: string } | null
+  short_description?: string
+  is_new?: boolean
+  is_featured?: boolean
 }
 
 interface Category {
@@ -38,7 +40,6 @@ interface Category {
   slug: string
   image: string | null
   description: string | null
-  product_count?: number
 }
 
 interface BlogPost {
@@ -52,7 +53,7 @@ interface BlogPost {
 
 export const metadata: Metadata = {
   title: 'Filenes Sports - Profesyonel Spor ve Güvenlik Fileleri',
-  description: 'Türkiye\'nin önde gelen spor ve güvenlik filesi üreticisi. Futbol, basketbol, voleybol fileleri ve daha fazlası.',
+  description: 'Türkiye\'nin önde gelen spor ve güvenlik filesi üreticisi. Kale fileleri, kapama fileleri, tavan fileleri ve daha fazlası.',
 }
 
 export default async function HomePage() {
@@ -67,30 +68,37 @@ export default async function HomePage() {
     .eq('is_active', true)
     .order('sort_order', { ascending: true })
 
-  // Fetch featured products
-  const { data: featuredProducts } = await supabaseAdmin
-    .from('products')
-    .select('id, name, slug, price, compare_at_price, images, category:categories(name, slug)')
-    .eq('is_active', true)
-    .eq('is_featured', true)
-    .order('created_at', { ascending: false })
-    .limit(8)
-
-  // Fetch new products
-  const { data: newProducts } = await supabaseAdmin
-    .from('products')
-    .select('id, name, slug, price, compare_at_price, images, category:categories(name, slug)')
-    .eq('is_active', true)
-    .order('created_at', { ascending: false })
-    .limit(4)
-
-  // Fetch categories with product count
+  // Fetch all active categories
   const { data: categories } = await supabaseAdmin
     .from('categories')
     .select('id, name, slug, image, description')
     .eq('is_active', true)
     .order('sort_order', { ascending: true })
-    .limit(6)
+
+  // Fetch products by category
+  const { data: kaleProducts } = await supabaseAdmin
+    .from('products')
+    .select('id, name, slug, price, compare_price, images, short_description, is_new, is_featured')
+    .eq('is_active', true)
+    .eq('category_id', categories?.find(c => c.slug === 'kale-fileleri')?.id || '')
+    .order('created_at', { ascending: false })
+    .limit(12)
+
+  const { data: kapamaProducts } = await supabaseAdmin
+    .from('products')
+    .select('id, name, slug, price, compare_price, images, short_description, is_new, is_featured')
+    .eq('is_active', true)
+    .eq('category_id', categories?.find(c => c.slug === 'kapama-fileleri')?.id || '')
+    .order('created_at', { ascending: false })
+    .limit(12)
+
+  const { data: tavanProducts } = await supabaseAdmin
+    .from('products')
+    .select('id, name, slug, price, compare_price, images, short_description, is_new, is_featured')
+    .eq('is_active', true)
+    .eq('category_id', categories?.find(c => c.slug === 'tavan-fileleri')?.id || '')
+    .order('created_at', { ascending: false })
+    .limit(12)
 
   // Fetch blog posts
   const { data: blogPosts } = await supabaseAdmin
@@ -135,59 +143,59 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Categories Section */}
+      {/* Category Cards Section */}
       {categories && categories.length > 0 && (
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <h2 className="text-3xl font-bold text-[#1C2840]">Kategoriler</h2>
-                <p className="text-gray-600 mt-1">İhtiyacınıza uygun ürünleri keşfedin</p>
-              </div>
-              <Link href="/urunler" className="hidden md:flex items-center gap-2 text-[#BB1624] hover:underline font-medium">
-                Tümünü Gör <ChevronRight className="w-4 h-4" />
-              </Link>
+            <div className="text-center mb-12">
+              <span className="inline-block bg-[#1C2840] text-white text-sm font-semibold px-4 py-1 rounded-full mb-4">
+                KATEGORİLER
+              </span>
+              <h2 className="text-3xl md:text-4xl font-bold text-[#1C2840]">Ürün Kategorilerimiz</h2>
+              <p className="text-gray-600 mt-2 max-w-xl mx-auto">
+                Profesyonel spor fileleri için doğru adrestesiniz
+              </p>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {categories.map((cat: Category) => (
-                <Link key={cat.id} href={`/kategori/${cat.slug}`} className="group">
-                  <div className="bg-white rounded-2xl p-6 text-center hover:shadow-xl transition-all hover:-translate-y-1 border border-gray-100">
-                    <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-[#1C2840] to-[#2A3A5A] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                      {cat.image ? (
-                        <Image src={cat.image} alt={cat.name} width={48} height={48} className="object-contain" />
-                      ) : (
-                        <span className="text-3xl text-white">🥅</span>
-                      )}
-                    </div>
-                    <h3 className="font-semibold text-[#1C2840] group-hover:text-[#BB1624] transition-colors">{cat.name}</h3>
-                  </div>
-                </Link>
+                <CategoryCard key={cat.id} category={cat} />
               ))}
             </div>
           </div>
         </section>
       )}
 
-      {/* Featured Products */}
-      {featuredProducts && featuredProducts.length > 0 && (
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <span className="inline-block bg-[#BB1624] text-white text-sm font-semibold px-3 py-1 rounded-full mb-2">⭐ ÖNE ÇIKAN</span>
-                <h2 className="text-3xl font-bold text-[#1C2840]">Popüler Ürünler</h2>
-              </div>
-              <Link href="/urunler" className="hidden md:flex items-center gap-2 text-[#BB1624] hover:underline font-medium">
-                Tümünü Gör <ChevronRight className="w-4 h-4" />
-              </Link>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {featuredProducts.map((product: any) => (
-                <ProductCard key={product.id} product={product as any} />
-              ))}
-            </div>
-          </div>
-        </section>
+      {/* Kale Fileleri Slider */}
+      {kaleProducts && kaleProducts.length > 0 && (
+        <ProductSlider
+          title="⚽ Kale Fileleri"
+          products={kaleProducts as Product[]}
+          categorySlug="kale-fileleri"
+          categoryName="Kale Fileleri"
+          bgColor="white"
+        />
+      )}
+
+      {/* Kapama Fileleri Slider */}
+      {kapamaProducts && kapamaProducts.length > 0 && (
+        <ProductSlider
+          title="🏟️ Kapama Fileleri"
+          products={kapamaProducts as Product[]}
+          categorySlug="kapama-fileleri"
+          categoryName="Kapama Fileleri"
+          bgColor="gray"
+        />
+      )}
+
+      {/* Tavan Fileleri Slider */}
+      {tavanProducts && tavanProducts.length > 0 && (
+        <ProductSlider
+          title="🏠 Tavan Fileleri"
+          products={tavanProducts as Product[]}
+          categorySlug="tavan-fileleri"
+          categoryName="Tavan Fileleri"
+          bgColor="white"
+        />
       )}
 
       {/* Promo Banner */}
@@ -220,30 +228,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* New Products */}
-      {newProducts && newProducts.length > 0 && (
-        <section className="py-16 bg-gray-50">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <span className="inline-block bg-green-600 text-white text-sm font-semibold px-3 py-1 rounded-full mb-2">🆕 YENİ</span>
-                <h2 className="text-3xl font-bold text-[#1C2840]">Yeni Eklenen Ürünler</h2>
-              </div>
-              <Link href="/urunler" className="hidden md:flex items-center gap-2 text-[#BB1624] hover:underline font-medium">
-                Tümünü Gör <ChevronRight className="w-4 h-4" />
-              </Link>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {newProducts.map((product: any) => (
-                <ProductCard key={product.id} product={product as any} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* Why Choose Us */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-[#1C2840] mb-4">Neden Filenes Sports?</h2>
@@ -271,7 +257,7 @@ export default async function HomePage() {
 
       {/* Blog Section */}
       {blogPosts && blogPosts.length > 0 && (
-        <section className="py-16 bg-gray-50">
+        <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between mb-8">
               <div>
@@ -364,9 +350,84 @@ function FeatureItem({ icon, title, desc }: { icon: React.ReactNode; title: stri
   )
 }
 
+function CategoryCard({ category }: { category: Category }) {
+  // Kategori için ikon belirle
+  const getCategoryIcon = (slug: string) => {
+    switch (slug) {
+      case 'kale-fileleri':
+        return '⚽'
+      case 'kapama-fileleri':
+        return '🏟️'
+      case 'tavan-fileleri':
+        return '🏠'
+      default:
+        return '🥅'
+    }
+  }
+
+  // Kategori için gradient belirle
+  const getCategoryGradient = (slug: string) => {
+    switch (slug) {
+      case 'kale-fileleri':
+        return 'from-green-600 to-green-800'
+      case 'kapama-fileleri':
+        return 'from-blue-600 to-blue-800'
+      case 'tavan-fileleri':
+        return 'from-purple-600 to-purple-800'
+      default:
+        return 'from-[#1C2840] to-[#2A3A5A]'
+    }
+  }
+
+  return (
+    <Link href={`/kategori/${category.slug}`} className="group">
+      <div className="relative overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+        {/* Background Image or Gradient */}
+        <div className={`h-48 bg-gradient-to-br ${getCategoryGradient(category.slug)} relative`}>
+          {category.image ? (
+            <Image
+              src={category.image}
+              alt={category.name}
+              fill
+              className="object-cover group-hover:scale-110 transition-transform duration-500"
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-8xl opacity-30">{getCategoryIcon(category.slug)}</span>
+            </div>
+          )}
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
+
+          {/* Icon Badge */}
+          <div className="absolute top-4 left-4 w-14 h-14 bg-white/90 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+            <span className="text-3xl">{getCategoryIcon(category.slug)}</span>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-6">
+          <h3 className="text-xl font-bold text-[#1C2840] mb-2 group-hover:text-[#BB1624] transition-colors">
+            {category.name}
+          </h3>
+          {category.description && (
+            <p className="text-gray-600 text-sm line-clamp-2 mb-4">
+              {category.description}
+            </p>
+          )}
+          <div className="flex items-center text-[#BB1624] font-medium">
+            <span>Ürünleri Gör</span>
+            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
+          </div>
+        </div>
+      </div>
+    </Link>
+  )
+}
+
 function WhyUsCard({ icon, title, desc }: { icon: string; title: string; desc: string }) {
   return (
-    <div className="bg-gray-50 rounded-2xl p-8 text-center hover:shadow-lg transition-shadow">
+    <div className="bg-white rounded-2xl p-8 text-center hover:shadow-lg transition-shadow border border-gray-100">
       <span className="text-5xl mb-4 block">{icon}</span>
       <h3 className="text-xl font-bold text-[#1C2840] mb-2">{title}</h3>
       <p className="text-gray-600">{desc}</p>
@@ -377,7 +438,7 @@ function WhyUsCard({ icon, title, desc }: { icon: string; title: string; desc: s
 function BlogCard({ post }: { post: BlogPost }) {
   return (
     <Link href={`/blog/${post.slug}`} className="group">
-      <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all">
+      <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-gray-100">
         <div className="aspect-video bg-gray-200 relative overflow-hidden">
           {post.featured_image ? (
             <Image src={post.featured_image} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform" />

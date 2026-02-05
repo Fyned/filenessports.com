@@ -221,32 +221,36 @@ export function Header({ freeShippingThreshold = 500 }: HeaderProps) {
           </div>
         </div>
 
-        {/* Navigation - Desktop */}
+        {/* Navigation - Desktop - Centered */}
         <nav className="hidden lg:block bg-[#1C2840]">
           <div className="container mx-auto px-4">
-            <ul className="flex items-center gap-1">
+            <ul className="flex items-center justify-center gap-2">
               <li>
                 <Link
                   href="/urunler"
-                  className="flex items-center gap-2 px-5 py-4 text-white font-medium hover:bg-[#BB1624] transition-colors"
+                  className="flex items-center gap-2 px-6 py-3.5 text-white font-medium hover:bg-[#BB1624] transition-colors rounded-t-lg"
                 >
                   <Menu className="w-5 h-5" />
                   Tüm Ürünler
                 </Link>
               </li>
-              {categories.map((category) => (
+              <li className="w-px h-6 bg-white/20" />
+              {categories.map((category, index) => (
                 <li
                   key={category.id}
-                  className="relative"
+                  className="relative flex items-center"
                   onMouseEnter={() => setActiveCategory(category.id)}
                   onMouseLeave={() => setActiveCategory(null)}
                 >
                   <Link
                     href={`/kategori/${category.slug}`}
-                    className={`flex items-center gap-1 px-4 py-4 text-white font-medium transition-colors ${activeCategory === category.id ? 'bg-[#BB1624]' : 'hover:bg-[#2A3A5A]'}`}
+                    className={`flex items-center gap-1 px-6 py-3.5 text-white font-medium transition-colors rounded-t-lg ${activeCategory === category.id ? 'bg-[#BB1624]' : 'hover:bg-[#2A3A5A]'}`}
                   >
                     {category.name}
                   </Link>
+                  {index < categories.length - 1 && (
+                    <span className="w-px h-6 bg-white/20 ml-2" />
+                  )}
                 </li>
               ))}
             </ul>

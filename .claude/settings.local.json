@@ -35,7 +35,9 @@
       "Bash(git push:*)",
       "Bash(git commit -m \"$\\(cat <<''EOF''\nFix middleware for production deployment\n\n- Add environment variable checks to prevent errors during build\n- Remove debug console.log statements\n- Handle missing service role key gracefully\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git commit:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(claude mcp add TestSprite --env API_KEY=sk-user-K6ZITtGF3iS6He2DBrFQJR8RPguv5j0bEY619t4yMA7nkL46_n_eerqANs3ycS84gjZxOL3OLpEX_5Z3ylV-D29CXRBz5Zw6kGFBTFueAo_--JPszKHvomtRsUBTWUlv-B8 -- npx @testsprite/testsprite-mcp@latest)",
+      "WebFetch(domain:fileatolyesi.com)"
     ]
   }
 }
