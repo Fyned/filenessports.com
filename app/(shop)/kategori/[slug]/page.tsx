@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 import { ProductCard } from '@/components/shop/ProductCard'
 import { Product, Category } from '@/types/database'
 import { Metadata } from 'next'
@@ -16,9 +17,8 @@ interface CategoryPageProps {
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
   const { slug } = await params
-  const supabase = await createClient()
 
-  const { data: category } = await supabase
+  const { data: category } = await supabaseAdmin
     .from('categories')
     .select('name, description, meta_title, meta_description')
     .eq('slug', slug)
@@ -38,10 +38,9 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
 export default async function CategoryPage({ params, searchParams }: CategoryPageProps) {
   const { slug } = await params
   const search = await searchParams
-  const supabase = await createClient()
 
   // Fetch category
-  const { data: category } = await supabase
+  const { data: category } = await supabaseAdmin
     .from('categories')
     .select('*')
     .eq('slug', slug)
@@ -57,15 +56,15 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   const offset = (page - 1) * perPage
 
   // Fetch subcategories
-  const { data: subcategories } = await supabase
+  const { data: subcategories } = await supabaseAdmin
     .from('categories')
     .select('*')
     .eq('parent_id', category.id)
     .eq('is_active', true)
     .order('sort_order')
 
-  // Build products query
-  let query = supabase
+  // Build products query - use supabaseAdmin to bypass RLS
+  let query = supabaseAdmin
     .from('products')
     .select(`
       *,
