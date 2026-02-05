@@ -6,7 +6,7 @@ import { Metadata } from 'next'
 import { Truck, MessageCircle, Shield, RefreshCcw, ArrowRight, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { getSiteSettings } from '@/lib/settings'
+// Settings artık statik değerler kullanıyor
 import { StaticHeroSlider } from '@/components/shop/StaticHeroSlider'
 import { PromoBannerGrid } from '@/components/shop/PromoBannerGrid'
 import { CategoryProductBlock } from '@/components/shop/CategoryProductBlock'
@@ -46,73 +46,89 @@ export const metadata: Metadata = {
 }
 
 export default async function HomePage() {
-  const supabase = await createClient()
-  const supabaseAdmin = await getSupabaseAdmin()
-  const settings = await getSiteSettings()
+  let categories: Category[] = []
+  let kaleProducts: Product[] = []
+  let kapamaProducts: Product[] = []
+  let tavanProducts: Product[] = []
+  let blogPosts: BlogPost[] = []
 
-  // Fetch all active categories (image sütunu veritabanında yok)
-  const { data: categories, error: catError } = await supabaseAdmin
-    .from('categories')
-    .select('id, name, slug, description')
-    .eq('is_active', true)
-    .order('sort_order', { ascending: true })
+  try {
+    const supabase = await createClient()
+    const supabaseAdmin = await getSupabaseAdmin()
 
-  // Kategori ID'lerini bul
-  const kaleCategory = categories?.find(c => c.slug === 'kale-fileleri')
-  const kapamaCategory = categories?.find(c => c.slug === 'kapama-fileleri')
-  const tavanCategory = categories?.find(c => c.slug === 'tavan-fileleri')
+    // Fetch all active categories (image sütunu veritabanında yok)
+    const { data: categoriesData } = await supabaseAdmin
+      .from('categories')
+      .select('id, name, slug, description')
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true })
 
-  // Fetch products by category - her kategori için 8 ürün çek
-  const { data: kaleProducts } = kaleCategory
-    ? await supabaseAdmin
+    categories = categoriesData || []
+
+    // Kategori ID'lerini bul
+    const kaleCategory = categories?.find(c => c.slug === 'kale-fileleri')
+    const kapamaCategory = categories?.find(c => c.slug === 'kapama-fileleri')
+    const tavanCategory = categories?.find(c => c.slug === 'tavan-fileleri')
+
+    // Fetch products by category - her kategori için 8 ürün çek
+    if (kaleCategory) {
+      const { data } = await supabaseAdmin
         .from('products')
         .select('id, name, slug, price, compare_price, short_description, is_new, is_featured')
         .eq('is_active', true)
         .eq('category_id', kaleCategory.id)
         .order('created_at', { ascending: false })
         .limit(8)
-    : { data: [] }
+      kaleProducts = data || []
+    }
 
-  const { data: kapamaProducts } = kapamaCategory
-    ? await supabaseAdmin
+    if (kapamaCategory) {
+      const { data } = await supabaseAdmin
         .from('products')
         .select('id, name, slug, price, compare_price, short_description, is_new, is_featured')
         .eq('is_active', true)
         .eq('category_id', kapamaCategory.id)
         .order('created_at', { ascending: false })
         .limit(8)
-    : { data: [] }
+      kapamaProducts = data || []
+    }
 
-  const { data: tavanProducts } = tavanCategory
-    ? await supabaseAdmin
+    if (tavanCategory) {
+      const { data } = await supabaseAdmin
         .from('products')
         .select('id, name, slug, price, compare_price, short_description, is_new, is_featured')
         .eq('is_active', true)
         .eq('category_id', tavanCategory.id)
         .order('created_at', { ascending: false })
         .limit(8)
-    : { data: [] }
+      tavanProducts = data || []
+    }
 
-  // Fetch blog posts
-  const { data: blogPosts } = await supabaseAdmin
-    .from('blog_posts')
-    .select('id, title, slug, excerpt, featured_image, created_at')
-    .eq('is_published', true)
-    .order('created_at', { ascending: false })
-    .limit(3)
+    // Fetch blog posts
+    const { data: blogData } = await supabaseAdmin
+      .from('blog_posts')
+      .select('id, title, slug, excerpt, featured_image, created_at')
+      .eq('is_published', true)
+      .order('created_at', { ascending: false })
+      .limit(3)
+    blogPosts = blogData || []
 
-  // Check for Puck homepage
-  const { data: page } = await supabase
-    .from('pages')
-    .select(`*, page_blocks(puck_data, is_draft)`)
-    .eq('is_homepage', true)
-    .eq('is_published', true)
-    .single()
+    // Check for Puck homepage
+    const { data: page } = await supabase
+      .from('pages')
+      .select(`*, page_blocks(puck_data, is_draft)`)
+      .eq('is_homepage', true)
+      .eq('is_published', true)
+      .single()
 
-  const publishedBlock = page?.page_blocks?.find((block: { is_draft: boolean }) => !block.is_draft)
+    const publishedBlock = page?.page_blocks?.find((block: { is_draft: boolean }) => !block.is_draft)
 
-  if (publishedBlock?.puck_data) {
-    return <Render config={puckConfig} data={publishedBlock.puck_data} />
+    if (publishedBlock?.puck_data) {
+      return <Render config={puckConfig} data={publishedBlock.puck_data} />
+    }
+  } catch (error) {
+    console.error('Homepage data fetch error:', error)
+    // Continue with empty data - page will still render
   }
 
   return (
@@ -124,7 +140,7 @@ export default async function HomePage() {
       <section className="py-8 bg-white border-b">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <FeatureItem icon={<Truck />} title="Ücretsiz Kargo" desc={`${settings.free_shipping_threshold.toLocaleString('tr-TR')} TL üzeri`} />
+            <FeatureItem icon={<Truck />} title="Ücretsiz Kargo" desc="5.000 TL üzeri" />
             <FeatureItem icon={<MessageCircle />} title="WhatsApp Destek" desc="Anında iletişim" />
             <FeatureItem icon={<Shield />} title="Güvenli Ödeme" desc="SSL korumalı" />
             <FeatureItem icon={<RefreshCcw />} title="Kolay İade" desc="14 gün içinde" />
