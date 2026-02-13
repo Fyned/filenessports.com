@@ -141,7 +141,7 @@ export function ProductSlider({
 }
 
 function ProductCard({ product }: { product: Product }) {
-  const imageUrl = product.images?.[0] || '/images/placeholder-product.jpg'
+  const imageUrl = product.images?.[0]
   const hasDiscount = product.compare_price && product.compare_price > product.price
   const discountPercent = hasDiscount
     ? Math.round(((product.compare_price! - product.price) / product.compare_price!) * 100)
@@ -152,13 +152,25 @@ function ProductCard({ product }: { product: Product }) {
       <div className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
         {/* Image Container */}
         <div className="relative aspect-square overflow-hidden bg-gray-50">
-          <Image
-            src={imageUrl}
-            alt={product.name}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
-            sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          />
+          {imageUrl ? (
+            <Image
+              src={imageUrl}
+              alt={product.name}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-500"
+              sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#1C2840] to-[#2A3A5A]">
+              <div className="text-center">
+                <div className="w-14 h-14 mx-auto mb-2 rounded-full bg-white/10 flex items-center justify-center">
+                  <svg className="w-7 h-7 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-2">
