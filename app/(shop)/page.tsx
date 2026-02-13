@@ -70,38 +70,63 @@ export default async function HomePage() {
     const kapamaCategory = categories?.find(c => c.slug === 'kapama-fileleri')
     const tavanCategory = categories?.find(c => c.slug === 'tavan-fileleri')
 
-    // Fetch products by category - her kategori için 8 ürün çek
+    // Fetch products by category - her kategori için 8 ürün çek (görseller dahil)
     if (kaleCategory) {
       const { data } = await supabaseAdmin
         .from('products')
-        .select('id, name, slug, price, compare_price, short_description, is_new, is_featured')
+        .select(`
+          id, name, slug, price, compare_price, short_description, is_new, is_featured,
+          product_images(url, is_primary)
+        `)
         .eq('is_active', true)
         .eq('category_id', kaleCategory.id)
         .order('created_at', { ascending: false })
         .limit(8)
-      kaleProducts = data || []
+      // Görselleri düzleştir - primary önce gelsin
+      kaleProducts = (data || []).map(p => ({
+        ...p,
+        images: p.product_images?.sort((a: {is_primary: boolean}, b: {is_primary: boolean}) =>
+          (b.is_primary ? 1 : 0) - (a.is_primary ? 1 : 0)
+        ).map((img: {url: string}) => img.url) || []
+      }))
     }
 
     if (kapamaCategory) {
       const { data } = await supabaseAdmin
         .from('products')
-        .select('id, name, slug, price, compare_price, short_description, is_new, is_featured')
+        .select(`
+          id, name, slug, price, compare_price, short_description, is_new, is_featured,
+          product_images(url, is_primary)
+        `)
         .eq('is_active', true)
         .eq('category_id', kapamaCategory.id)
         .order('created_at', { ascending: false })
         .limit(8)
-      kapamaProducts = data || []
+      kapamaProducts = (data || []).map(p => ({
+        ...p,
+        images: p.product_images?.sort((a: {is_primary: boolean}, b: {is_primary: boolean}) =>
+          (b.is_primary ? 1 : 0) - (a.is_primary ? 1 : 0)
+        ).map((img: {url: string}) => img.url) || []
+      }))
     }
 
     if (tavanCategory) {
       const { data } = await supabaseAdmin
         .from('products')
-        .select('id, name, slug, price, compare_price, short_description, is_new, is_featured')
+        .select(`
+          id, name, slug, price, compare_price, short_description, is_new, is_featured,
+          product_images(url, is_primary)
+        `)
         .eq('is_active', true)
         .eq('category_id', tavanCategory.id)
         .order('created_at', { ascending: false })
         .limit(8)
-      tavanProducts = data || []
+      tavanProducts = (data || []).map(p => ({
+        ...p,
+        images: p.product_images?.sort((a: {is_primary: boolean}, b: {is_primary: boolean}) =>
+          (b.is_primary ? 1 : 0) - (a.is_primary ? 1 : 0)
+        ).map((img: {url: string}) => img.url) || []
+      }))
     }
 
     // Fetch blog posts
