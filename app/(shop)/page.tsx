@@ -6,7 +6,8 @@ import { Metadata } from 'next'
 import { Truck, MessageCircle, Shield, RefreshCcw, ArrowRight, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-// Settings artık statik değerler kullanıyor
+// Dynamic banner slider
+import { HeroSlider } from '@/components/shop/HeroSlider'
 import { StaticHeroSlider } from '@/components/shop/StaticHeroSlider'
 import { PromoBannerGrid } from '@/components/shop/PromoBannerGrid'
 import { CategoryProductBlock } from '@/components/shop/CategoryProductBlock'
@@ -40,6 +41,18 @@ interface BlogPost {
   created_at: string
 }
 
+interface Banner {
+  id: string
+  title: string | null
+  subtitle: string | null
+  image_url: string
+  mobile_image_url: string | null
+  link: string | null
+  button_text: string | null
+  background_color: string | null
+  text_color: string | null
+}
+
 export const metadata: Metadata = {
   title: 'Filenes Sports - Profesyonel Spor ve Güvenlik Fileleri',
   description: 'Türkiye\'nin önde gelen spor ve güvenlik filesi üreticisi. Kale fileleri, kapama fileleri, tavan fileleri ve daha fazlası.',
@@ -51,10 +64,21 @@ export default async function HomePage() {
   let kapamaProducts: Product[] = []
   let tavanProducts: Product[] = []
   let blogPosts: BlogPost[] = []
+  let banners: Banner[] = []
 
   try {
     const supabase = await createClient()
     const supabaseAdmin = await getSupabaseAdmin()
+
+    // Fetch active banners
+    const { data: bannersData } = await supabaseAdmin
+      .from('banners')
+      .select('id, title, subtitle, image_url, mobile_image_url, link, button_text, background_color, text_color')
+      .eq('is_active', true)
+      .eq('position', 'hero')
+      .order('sort_order', { ascending: true })
+
+    banners = bannersData || []
 
     // Fetch all active categories (image sütunu veritabanında yok)
     const { data: categoriesData } = await supabaseAdmin
@@ -158,8 +182,12 @@ export default async function HomePage() {
 
   return (
     <div>
-      {/* Hero Section - Görsel bağımsız statik slider */}
-      <StaticHeroSlider />
+      {/* Hero Section - Banner'lar varsa veritabanından, yoksa statik slider */}
+      {banners && banners.length > 0 ? (
+        <HeroSlider banners={banners} />
+      ) : (
+        <StaticHeroSlider />
+      )}
 
       {/* Features Bar */}
       <section className="py-8 bg-white border-b">
