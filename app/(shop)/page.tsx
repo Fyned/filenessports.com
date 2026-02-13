@@ -30,6 +30,7 @@ interface Category {
   name: string
   slug: string
   description: string | null
+  image_url: string | null
 }
 
 interface BlogPost {
@@ -80,10 +81,10 @@ export default async function HomePage() {
 
     banners = bannersData || []
 
-    // Fetch all active categories (image sütunu veritabanında yok)
+    // Fetch all active categories with images
     const { data: categoriesData } = await supabaseAdmin
       .from('categories')
-      .select('id, name, slug, description')
+      .select('id, name, slug, description, image_url')
       .eq('is_active', true)
       .order('sort_order', { ascending: true })
 
@@ -348,62 +349,41 @@ function FeatureItem({ icon, title, desc }: { icon: React.ReactNode; title: stri
 }
 
 function CategoryCard({ category }: { category: Category }) {
-  // Kategori için ikon belirle
-  const getCategoryIcon = (slug: string) => {
-    switch (slug) {
-      case 'kale-fileleri':
-        return '⚽'
-      case 'kapama-fileleri':
-        return '🏟️'
-      case 'tavan-fileleri':
-        return '🏠'
-      default:
-        return '🥅'
-    }
-  }
-
-  // Kategori için gradient belirle
-  const getCategoryGradient = (slug: string) => {
-    switch (slug) {
-      case 'kale-fileleri':
-        return 'from-green-600 to-green-800'
-      case 'kapama-fileleri':
-        return 'from-blue-600 to-blue-800'
-      case 'tavan-fileleri':
-        return 'from-purple-600 to-purple-800'
-      default:
-        return 'from-[#1C2840] to-[#2A3A5A]'
-    }
-  }
-
   return (
     <Link href={`/kategori/${category.slug}`} className="group">
       <div className="relative overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
-        {/* Background Gradient with Icon */}
-        <div className={`h-48 bg-gradient-to-br ${getCategoryGradient(category.slug)} relative`}>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-8xl opacity-30">{getCategoryIcon(category.slug)}</span>
-          </div>
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
+        {/* Category Image */}
+        <div className="h-56 relative overflow-hidden">
+          {category.image_url ? (
+            <Image
+              src={category.image_url}
+              alt={category.name}
+              fill
+              className="object-cover group-hover:scale-110 transition-transform duration-500"
+              sizes="(max-width: 768px) 100vw, 33vw"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-[#1C2840] to-[#2A3A5A]" />
+          )}
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
-          {/* Icon Badge */}
-          <div className="absolute top-4 left-4 w-14 h-14 bg-white/90 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-            <span className="text-3xl">{getCategoryIcon(category.slug)}</span>
+          {/* Category Name on Image */}
+          <div className="absolute bottom-4 left-4 right-4">
+            <h3 className="text-2xl font-bold text-white drop-shadow-lg">
+              {category.name}
+            </h3>
           </div>
         </div>
 
         {/* Content */}
-        <div className="p-6">
-          <h3 className="text-xl font-bold text-[#1C2840] mb-2 group-hover:text-[#BB1624] transition-colors">
-            {category.name}
-          </h3>
+        <div className="p-5">
           {category.description && (
             <p className="text-gray-600 text-sm line-clamp-2 mb-4">
               {category.description}
             </p>
           )}
-          <div className="flex items-center text-[#BB1624] font-medium">
+          <div className="flex items-center text-[#BB1624] font-semibold">
             <span>Ürünleri Gör</span>
             <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
           </div>
