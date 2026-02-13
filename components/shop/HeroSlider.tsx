@@ -75,26 +75,31 @@ export function HeroSlider({ banners }: HeroSliderProps) {
             sizes="100vw"
           />
 
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-black/30" />
+          {/* Professional gradient overlay - darker at bottom for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10" />
 
-          {/* Content */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="container mx-auto px-4 text-center">
-              {/* Text container with semi-transparent background */}
-              <div className="inline-block bg-black/40 backdrop-blur-sm rounded-2xl px-8 py-6 md:px-12 md:py-8">
+          {/* Content - positioned at bottom with clean typography */}
+          <div className="absolute inset-0 flex items-end">
+            <div className="container mx-auto px-4 pb-20 md:pb-24 lg:pb-28">
+              <div className="max-w-3xl">
                 {banner.title && (
                   <h2
-                    className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 drop-shadow-lg"
-                    style={{ color: banner.text_color || '#ffffff' }}
+                    className="text-3xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 text-white"
+                    style={{
+                      textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                      color: banner.text_color || '#ffffff'
+                    }}
                   >
                     {banner.title}
                   </h2>
                 )}
                 {banner.subtitle && (
                   <p
-                    className="text-lg md:text-xl lg:text-2xl mb-6 max-w-2xl mx-auto drop-shadow-md"
-                    style={{ color: banner.text_color || '#ffffff', opacity: 0.95 }}
+                    className="text-base md:text-xl lg:text-2xl mb-6 md:mb-8 text-white/90 max-w-2xl"
+                    style={{
+                      textShadow: '0 1px 3px rgba(0,0,0,0.3)',
+                      color: banner.text_color || '#ffffff'
+                    }}
                   >
                     {banner.subtitle}
                   </p>
@@ -102,7 +107,7 @@ export function HeroSlider({ banners }: HeroSliderProps) {
                 {banner.link && banner.button_text && (
                   <Link
                     href={banner.link}
-                    className="inline-flex items-center justify-center gap-2 bg-[#BB1624] hover:bg-[#8F101B] text-white px-8 py-4 rounded-full font-semibold text-lg transition-all hover:scale-105 shadow-lg"
+                    className="inline-flex items-center justify-center gap-2 bg-[#BB1624] hover:bg-[#8F101B] text-white px-6 md:px-8 py-3 md:py-4 rounded-lg font-semibold text-base md:text-lg transition-all hover:scale-105 shadow-xl"
                   >
                     {banner.button_text}
                   </Link>
