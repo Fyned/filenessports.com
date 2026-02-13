@@ -117,7 +117,7 @@ export function Header({ freeShippingThreshold = 500 }: HeaderProps) {
       {/* Main Header */}
       <div className={`bg-white transition-all duration-300 ${isScrolled ? 'fixed top-0 left-0 right-0 shadow-lg' : 'relative'}`}>
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between py-4 gap-8">
+          <div className="flex items-center justify-between py-5 gap-8">
             {/* Mobile Menu Button */}
             <button
               className="lg:hidden p-2 -ml-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -132,26 +132,26 @@ export function Header({ freeShippingThreshold = 500 }: HeaderProps) {
               <Image
                 src="/images/logo.svg"
                 alt="Filenes Sports"
-                width={200}
-                height={67}
-                className="h-14 w-auto"
+                width={240}
+                height={80}
+                className="h-16 md:h-20 w-auto"
                 priority
               />
             </Link>
 
             {/* Search Bar - Desktop */}
-            <form onSubmit={handleSearch} className="hidden lg:flex flex-1 max-w-2xl">
+            <form onSubmit={handleSearch} className="hidden lg:flex flex-1 max-w-3xl">
               <div className="relative w-full">
                 <Input
                   type="search"
                   placeholder="Ürün, kategori veya marka ara..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full h-12 pl-5 pr-14 rounded-full border-2 border-gray-200 focus:border-[#1C2840] bg-gray-50 focus:bg-white transition-all"
+                  className="w-full h-14 pl-6 pr-16 rounded-full border-2 border-gray-200 focus:border-[#1C2840] bg-gray-50 focus:bg-white transition-all text-base"
                 />
                 <button
                   type="submit"
-                  className="absolute right-1 top-1/2 -translate-y-1/2 bg-[#BB1624] hover:bg-[#8F101B] text-white w-10 h-10 rounded-full flex items-center justify-center transition-colors"
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 bg-[#BB1624] hover:bg-[#8F101B] text-white w-11 h-11 rounded-full flex items-center justify-center transition-colors"
                 >
                   <Search className="w-5 h-5" />
                 </button>
@@ -194,28 +194,28 @@ export function Header({ freeShippingThreshold = 500 }: HeaderProps) {
               {/* Account */}
               <Link
                 href="/hesabim"
-                className="hidden sm:flex flex-col items-center gap-1 p-2 hover:bg-gray-100 rounded-lg transition-colors group"
+                className="hidden sm:flex flex-col items-center gap-1.5 p-2 hover:bg-gray-100 rounded-xl transition-colors group"
               >
-                <div className="w-10 h-10 bg-gray-100 group-hover:bg-[#1C2840] rounded-full flex items-center justify-center transition-colors">
-                  <User className="w-5 h-5 text-[#1C2840] group-hover:text-white transition-colors" />
+                <div className="w-12 h-12 bg-gray-100 group-hover:bg-[#1C2840] rounded-full flex items-center justify-center transition-colors">
+                  <User className="w-6 h-6 text-[#1C2840] group-hover:text-white transition-colors" />
                 </div>
-                <span className="text-xs text-gray-600 hidden xl:block">Hesabım</span>
+                <span className="text-xs font-medium text-gray-600 hidden xl:block">Hesabım</span>
               </Link>
 
               {/* Cart */}
               <Link
                 href="/sepet"
-                className="flex flex-col items-center gap-1 p-2 hover:bg-gray-100 rounded-lg transition-colors relative group"
+                className="flex flex-col items-center gap-1.5 p-2 hover:bg-gray-100 rounded-xl transition-colors relative group"
               >
-                <div className="w-10 h-10 bg-[#BB1624] group-hover:bg-[#8F101B] rounded-full flex items-center justify-center transition-colors relative">
-                  <ShoppingCart className="w-5 h-5 text-white" />
+                <div className="w-12 h-12 bg-[#BB1624] group-hover:bg-[#8F101B] rounded-full flex items-center justify-center transition-colors relative">
+                  <ShoppingCart className="w-6 h-6 text-white" />
                   {mounted && itemCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-[#1C2840] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold border-2 border-white">
+                    <span className="absolute -top-1 -right-1 bg-[#1C2840] text-white text-xs w-6 h-6 rounded-full flex items-center justify-center font-bold border-2 border-white">
                       {itemCount}
                     </span>
                   )}
                 </div>
-                <span className="text-xs text-gray-600 hidden xl:block">Sepetim</span>
+                <span className="text-xs font-medium text-gray-600 hidden xl:block">Sepetim</span>
               </Link>
             </div>
           </div>
@@ -224,11 +224,11 @@ export function Header({ freeShippingThreshold = 500 }: HeaderProps) {
         {/* Navigation - Desktop - Centered */}
         <nav className="hidden lg:block bg-[#1C2840]">
           <div className="container mx-auto px-4">
-            <ul className="flex items-center justify-center gap-2">
+            <ul className="flex items-center justify-center gap-1">
               <li>
                 <Link
                   href="/urunler"
-                  className="flex items-center gap-2 px-6 py-3.5 text-white font-medium hover:bg-[#BB1624] transition-colors rounded-t-lg"
+                  className="flex items-center gap-2 px-8 py-4 text-white font-semibold hover:bg-[#BB1624] transition-colors text-sm uppercase tracking-wide"
                 >
                   <Menu className="w-5 h-5" />
                   Tüm Ürünler
@@ -244,12 +244,12 @@ export function Header({ freeShippingThreshold = 500 }: HeaderProps) {
                 >
                   <Link
                     href={`/kategori/${category.slug}`}
-                    className={`flex items-center gap-1 px-6 py-3.5 text-white font-medium transition-colors rounded-t-lg ${activeCategory === category.id ? 'bg-[#BB1624]' : 'hover:bg-[#2A3A5A]'}`}
+                    className={`flex items-center gap-1 px-8 py-4 text-white font-semibold transition-colors text-sm uppercase tracking-wide ${activeCategory === category.id ? 'bg-[#BB1624]' : 'hover:bg-[#2A3A5A]'}`}
                   >
                     {category.name}
                   </Link>
                   {index < categories.length - 1 && (
-                    <span className="w-px h-6 bg-white/20 ml-2" />
+                    <span className="w-px h-6 bg-white/20 ml-1" />
                   )}
                 </li>
               ))}

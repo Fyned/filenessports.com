@@ -1,72 +1,115 @@
 'use client'
 
-import { Truck, MessageCircle, Tag, CreditCard } from 'lucide-react'
+import { Truck, MessageCircle, Tag, CreditCard, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface PromoBanner {
   icon: React.ReactNode
   title: string
   subtitle: string
+  description: string
   link: string
-  bgColor: string
-  hoverColor: string
+  linkText: string
+  bgImage?: string
+  overlayColor: string
 }
 
 const promoBanners: PromoBanner[] = [
   {
-    icon: <Truck className="w-8 h-8" />,
+    icon: <Truck className="w-10 h-10" />,
     title: 'Ücretsiz Kargo',
-    subtitle: '500 TL üzeri siparişlerde',
+    subtitle: '5.000 TL Üzeri',
+    description: 'Türkiye\'nin her yerine ücretsiz teslimat',
     link: '/urunler',
-    bgColor: 'bg-gradient-to-br from-emerald-500 to-emerald-600',
-    hoverColor: 'hover:from-emerald-600 hover:to-emerald-700',
+    linkText: 'Alışverişe Başla',
+    overlayColor: 'from-emerald-600/90 to-emerald-800/90',
   },
   {
-    icon: <MessageCircle className="w-8 h-8" />,
+    icon: <MessageCircle className="w-10 h-10" />,
     title: 'WhatsApp Destek',
-    subtitle: '7/24 hızlı iletişim',
-    link: 'https://wa.me/908503023262',
-    bgColor: 'bg-gradient-to-br from-green-500 to-green-600',
-    hoverColor: 'hover:from-green-600 hover:to-green-700',
+    subtitle: '7/24 İletişim',
+    description: 'Sorularınız için anında yardım alın',
+    link: 'https://wa.me/905418855676',
+    linkText: 'Bize Yazın',
+    overlayColor: 'from-green-600/90 to-green-800/90',
   },
   {
-    icon: <Tag className="w-8 h-8" />,
-    title: 'Özel Fiyatlar',
-    subtitle: 'Toptan alımlarda indirim',
+    icon: <Tag className="w-10 h-10" />,
+    title: 'Toptan Fiyat',
+    subtitle: 'Özel İndirimler',
+    description: 'Kurumsal müşterilere özel fiyatlar',
     link: '/iletisim',
-    bgColor: 'bg-gradient-to-br from-blue-500 to-blue-600',
-    hoverColor: 'hover:from-blue-600 hover:to-blue-700',
+    linkText: 'Teklif Alın',
+    overlayColor: 'from-blue-600/90 to-blue-800/90',
   },
   {
-    icon: <CreditCard className="w-8 h-8" />,
+    icon: <CreditCard className="w-10 h-10" />,
     title: 'Taksit İmkanı',
-    subtitle: 'Peşin fiyatına 3 taksit',
+    subtitle: 'Peşin Fiyatına',
+    description: '6 aya varan taksit seçenekleri',
     link: '/urunler',
-    bgColor: 'bg-gradient-to-br from-purple-500 to-purple-600',
-    hoverColor: 'hover:from-purple-600 hover:to-purple-700',
+    linkText: 'Detaylı Bilgi',
+    overlayColor: 'from-purple-600/90 to-purple-800/90',
   },
 ]
 
 export function PromoBannerGrid() {
   return (
-    <section className="py-8 bg-gray-50">
+    <section className="py-12 bg-white">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl md:text-3xl font-bold text-[#1C2840] mb-2">
+            Neden Bizi Tercih Etmelisiniz?
+          </h2>
+          <p className="text-gray-600">
+            Müşteri memnuniyeti odaklı hizmet anlayışımız
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {promoBanners.map((banner, index) => (
             <Link
               key={index}
               href={banner.link}
               target={banner.link.startsWith('http') ? '_blank' : undefined}
               rel={banner.link.startsWith('http') ? 'noopener noreferrer' : undefined}
-              className={`${banner.bgColor} ${banner.hoverColor} rounded-2xl p-6 text-white transition-all duration-300 hover:scale-105 hover:shadow-xl group`}
+              className="group relative overflow-hidden rounded-2xl bg-white border border-gray-200 hover:border-transparent hover:shadow-2xl transition-all duration-500"
             >
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                  {banner.icon}
+              {/* Background Pattern */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${banner.overlayColor} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+
+              {/* Decorative Circle */}
+              <div className="absolute -top-10 -right-10 w-32 h-32 bg-gray-100 rounded-full opacity-50 group-hover:bg-white/10 transition-colors duration-500" />
+
+              {/* Content */}
+              <div className="relative p-6 h-full flex flex-col">
+                {/* Icon */}
+                <div className="w-16 h-16 bg-[#1C2840] group-hover:bg-white/20 rounded-2xl flex items-center justify-center mb-4 transition-colors duration-500">
+                  <div className="text-white">
+                    {banner.icon}
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-bold text-lg">{banner.title}</h3>
-                  <p className="text-white/80 text-sm">{banner.subtitle}</p>
+
+                {/* Title & Subtitle */}
+                <div className="mb-3">
+                  <p className="text-sm font-semibold text-[#BB1624] group-hover:text-white/80 transition-colors duration-500">
+                    {banner.subtitle}
+                  </p>
+                  <h3 className="text-xl font-bold text-[#1C2840] group-hover:text-white transition-colors duration-500">
+                    {banner.title}
+                  </h3>
+                </div>
+
+                {/* Description */}
+                <p className="text-gray-600 text-sm mb-4 flex-1 group-hover:text-white/80 transition-colors duration-500">
+                  {banner.description}
+                </p>
+
+                {/* Link */}
+                <div className="flex items-center text-[#BB1624] group-hover:text-white font-semibold text-sm transition-colors duration-500">
+                  <span>{banner.linkText}</span>
+                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform duration-300" />
                 </div>
               </div>
             </Link>
