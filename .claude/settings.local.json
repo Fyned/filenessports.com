@@ -41,7 +41,11 @@
       "WebFetch(domain:file-atolyesi.com)",
       "Bash(dotenv -e .env.local -- node:*)",
       "Bash(npx dotenv:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(explorer:*)",
+      "Bash(start \"\" \"C:\\\\Projects\\\\file-atolyesi-clone\\\\gorseller\")",
+      "Bash($env:SUPABASE_SERVICE_ROLE_KEY=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZweXdwcXJ0bmVnemtlamZpem12Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2OTc2NzM5NSwiZXhwIjoyMDg1MzQzMzk1fQ.jc9YYIlr2fqG018pUucGP39ZzGCzp49JtS9cCjL5oE4\")",
+      "Bash(SUPABASE_SERVICE_ROLE_KEY=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZweXdwcXJ0bmVnemtlamZpem12Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2OTc2NzM5NSwiZXhwIjoyMDg1MzQzMzk1fQ.jc9YYIlr2fqG018pUucGP39ZzGCzp49JtS9cCjL5oE4\" node:*)"
     ]
   }
 }

@@ -81,30 +81,33 @@ export function HeroSlider({ banners }: HeroSliderProps) {
           {/* Content */}
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="container mx-auto px-4 text-center">
-              {banner.title && (
-                <h2
-                  className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 drop-shadow-lg"
-                  style={{ color: banner.text_color || '#ffffff' }}
-                >
-                  {banner.title}
-                </h2>
-              )}
-              {banner.subtitle && (
-                <p
-                  className="text-lg md:text-xl lg:text-2xl mb-8 max-w-2xl mx-auto drop-shadow-md"
-                  style={{ color: banner.text_color || '#ffffff', opacity: 0.9 }}
-                >
-                  {banner.subtitle}
-                </p>
-              )}
-              {banner.link && banner.button_text && (
-                <Link
-                  href={banner.link}
-                  className="inline-flex items-center justify-center gap-2 bg-[#BB1624] hover:bg-[#8F101B] text-white px-8 py-4 rounded-full font-semibold text-lg transition-all hover:scale-105 shadow-lg"
-                >
-                  {banner.button_text}
-                </Link>
-              )}
+              {/* Text container with semi-transparent background */}
+              <div className="inline-block bg-black/40 backdrop-blur-sm rounded-2xl px-8 py-6 md:px-12 md:py-8">
+                {banner.title && (
+                  <h2
+                    className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 drop-shadow-lg"
+                    style={{ color: banner.text_color || '#ffffff' }}
+                  >
+                    {banner.title}
+                  </h2>
+                )}
+                {banner.subtitle && (
+                  <p
+                    className="text-lg md:text-xl lg:text-2xl mb-6 max-w-2xl mx-auto drop-shadow-md"
+                    style={{ color: banner.text_color || '#ffffff', opacity: 0.95 }}
+                  >
+                    {banner.subtitle}
+                  </p>
+                )}
+                {banner.link && banner.button_text && (
+                  <Link
+                    href={banner.link}
+                    className="inline-flex items-center justify-center gap-2 bg-[#BB1624] hover:bg-[#8F101B] text-white px-8 py-4 rounded-full font-semibold text-lg transition-all hover:scale-105 shadow-lg"
+                  >
+                    {banner.button_text}
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         </div>
