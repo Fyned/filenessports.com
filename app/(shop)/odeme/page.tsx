@@ -570,7 +570,7 @@ export default function CheckoutPage() {
                     }
                   />
                   <Label htmlFor="terms" className="text-sm cursor-pointer">
-                    <Link href="/kullanim-sartlari" target="_blank" className="text-[#BB1624] hover:underline">
+                    <Link href="/mesafeli-satis-sozlesmesi" target="_blank" className="text-[#BB1624] hover:underline">
                       Mesafeli Satış Sözleşmesi
                     </Link>
                     'ni okudum ve kabul ediyorum. *

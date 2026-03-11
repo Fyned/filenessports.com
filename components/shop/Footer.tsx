@@ -180,6 +180,16 @@ export function Footer() {
                   Kullanım Şartları
                 </Link>
               </li>
+              <li>
+                <Link href="/mesafeli-satis-sozlesmesi" className="text-sm hover:text-white transition">
+                  Mesafeli Satış Sözleşmesi
+                </Link>
+              </li>
+              <li>
+                <Link href="/teslimat-ve-iade" className="text-sm hover:text-white transition">
+                  Teslimat ve İade
+                </Link>
+              </li>
             </ul>
           </div>
 
