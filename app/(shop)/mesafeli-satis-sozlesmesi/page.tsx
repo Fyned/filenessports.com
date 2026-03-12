@@ -21,8 +21,8 @@ export default function DistanceSalesAgreementPage() {
 
             <h3 className="text-lg font-semibold text-[#1C2840] mb-3">1.1 Satıcı Bilgileri</h3>
             <ul className="text-gray-600 space-y-2 mb-4">
-              <li><strong>Unvan:</strong> Filenes Sports</li>
-              <li><strong>Adres:</strong> Örnek Mahallesi, Spor Caddesi No: 123, Kadıköy, İstanbul</li>
+              <li><strong>Unvan:</strong> Enes Sucu</li>
+              <li><strong>Adres:</strong> Namık Kemal Mah. 10. Sk. No 73/1 Daire 1, İstanbul</li>
               <li><strong>Telefon:</strong> +90 541 885 56 76</li>
               <li><strong>E-posta:</strong> info@fileenessports.com</li>
               <li><strong>Ödeme Altyapısı:</strong> iyzico Ödeme Hizmetleri A.Ş.</li>
@@ -83,8 +83,8 @@ export default function DistanceSalesAgreementPage() {
             <p className="text-gray-600 mb-4">Ürünlerin teslimatına ilişkin koşullar:</p>
             <ul className="list-disc list-inside text-gray-600 space-y-2">
               <li>Teslimat süresi, sipariş onayından itibaren 1-5 iş günüdür (ürün ve bölgeye göre değişiklik gösterebilir)</li>
-              <li>150 TL ve üzeri siparişlerde kargo ücretsizdir</li>
-              <li>150 TL altı siparişlerde kargo ücreti 29,90 TL olarak uygulanmaktadır</li>
+              <li>Web sitesinde belirtilen tutarın üzerindeki siparişlerde kargo ücretsizdir</li>
+              <li>Belirtilen tutarın altındaki siparişlerde kargo ücreti sipariş sayfasında gösterilmektedir</li>
               <li>Teslimat, anlaşmalı kargo firmaları aracılığıyla alıcının sipariş sırasında belirttiği adrese yapılmaktadır</li>
               <li>Teslimat adresi bilgilerinin doğruluğundan alıcı sorumludur</li>
               <li>Mücbir sebep halleri (doğal afet, pandemi, hava koşulları vb.) nedeniyle teslimat süreleri uzayabilir; bu durumda alıcı bilgilendirilir</li>
@@ -199,7 +199,7 @@ export default function DistanceSalesAgreementPage() {
             <ul className="text-gray-600 space-y-2">
               <li><strong>E-posta:</strong> info@fileenessports.com</li>
               <li><strong>Telefon:</strong> +90 541 885 56 76</li>
-              <li><strong>Adres:</strong> Örnek Mahallesi, Spor Caddesi No: 123, Kadıköy, İstanbul</li>
+              <li><strong>Adres:</strong> Namık Kemal Mah. 10. Sk. No 73/1 Daire 1, İstanbul</li>
             </ul>
           </section>
         </div>

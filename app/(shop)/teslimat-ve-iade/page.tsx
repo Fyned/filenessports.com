@@ -36,12 +36,14 @@ export default function DeliveryReturnPage() {
             <div className="bg-gray-50 rounded-lg p-6 mb-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="bg-white rounded-lg p-4 border border-gray-200">
-                  <p className="text-sm text-gray-500 mb-1">150 TL ve Üzeri</p>
+                  <p className="text-sm text-gray-500 mb-1">Belirli Tutar ve Üzeri</p>
                   <p className="text-xl font-bold text-green-600">Ücretsiz Kargo</p>
+                  <p className="text-xs text-gray-400 mt-1">Güncel tutar sipariş sayfasında belirtilmektedir</p>
                 </div>
                 <div className="bg-white rounded-lg p-4 border border-gray-200">
-                  <p className="text-sm text-gray-500 mb-1">150 TL Altı</p>
-                  <p className="text-xl font-bold text-[#1C2840]">29,90 TL</p>
+                  <p className="text-sm text-gray-500 mb-1">Belirli Tutar Altı</p>
+                  <p className="text-xl font-bold text-[#1C2840]">Standart Kargo Ücreti</p>
+                  <p className="text-xs text-gray-400 mt-1">Güncel ücret sipariş sayfasında belirtilmektedir</p>
                 </div>
               </div>
             </div>
@@ -178,7 +180,7 @@ export default function DeliveryReturnPage() {
               <li><strong>E-posta:</strong> info@fileenessports.com</li>
               <li><strong>Telefon:</strong> +90 541 885 56 76</li>
               <li><strong>Çalışma Saatleri:</strong> Pazartesi - Cumartesi, 09:00 - 18:00</li>
-              <li><strong>Adres:</strong> Örnek Mahallesi, Spor Caddesi No: 123, Kadıköy, İstanbul</li>
+              <li><strong>Adres:</strong> Namık Kemal Mah. 10. Sk. No 73/1 Daire 1, İstanbul</li>
             </ul>
           </section>
         </div>

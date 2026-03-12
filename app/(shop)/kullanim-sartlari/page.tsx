@@ -77,7 +77,7 @@ export default function TermsPage() {
               <li>Teslimat süresi ortalama 1-5 iş günüdür</li>
               <li>Teslimat adresi doğru ve eksiksiz olmalıdır</li>
               <li>Hatalı adres nedeniyle yaşanan gecikmelerden sorumlu değiliz</li>
-              <li>150 TL üzeri alışverişlerde kargo ücretsizdir</li>
+              <li>Web sitesinde belirtilen tutarın üzerindeki alışverişlerde kargo ücretsizdir</li>
             </ul>
           </section>
 
@@ -146,7 +146,7 @@ export default function TermsPage() {
             <ul className="text-gray-600 space-y-2">
               <li><strong>E-posta:</strong> hukuk@fileenessports.com</li>
               <li><strong>Telefon:</strong> +90 (212) 123 45 67</li>
-              <li><strong>Adres:</strong> Örnek Mahallesi, Spor Caddesi No: 123, Kadıköy, İstanbul</li>
+              <li><strong>Adres:</strong> Namık Kemal Mah. 10. Sk. No 73/1 Daire 1, İstanbul</li>
             </ul>
           </section>
         </div>

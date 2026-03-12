@@ -23,7 +23,7 @@ const faqs = [
       {
         question: 'Kargo ücreti ne kadar?',
         answer:
-          '150 TL ve üzeri siparişlerde kargo ücretsizdir. 150 TL altı siparişlerde kargo ücreti 29.90 TL olarak uygulanmaktadır.',
+          'Belirli bir tutarın üzerindeki siparişlerde kargo ücretsizdir. Güncel ücretsiz kargo limiti ve kargo ücreti sipariş sayfasında belirtilmektedir.',
       },
       {
         question: 'Siparişim ne kadar sürede elime ulaşır?',
