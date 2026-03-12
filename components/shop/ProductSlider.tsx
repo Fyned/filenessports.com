@@ -148,7 +148,7 @@ function ProductCard({ product }: { product: Product }) {
     : 0
 
   return (
-    <Link href={`/urun/${product.slug}`} className="block group">
+    <Link href={`/urunler/${product.slug}`} className="block group">
       <div className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
         {/* Image Container */}
         <div className="relative aspect-square overflow-hidden bg-gray-50">
@@ -225,7 +225,7 @@ function ProductCard({ product }: { product: Product }) {
             onClick={(e) => {
               e.preventDefault()
               // Navigate to product page
-              window.location.href = `/urun/${product.slug}`
+              window.location.href = `/urunler/${product.slug}`
             }}
           >
             Ürünü İncele

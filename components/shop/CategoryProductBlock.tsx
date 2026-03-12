@@ -123,7 +123,7 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
   return (
     <div className="bg-white rounded-xl overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300 group">
       {/* Image */}
-      <Link href={`/urun/${product.slug}`}>
+      <Link href={`/urunler/${product.slug}`}>
         <div className="relative aspect-square bg-gray-100 overflow-hidden">
           {product.images?.[0] ? (
             <Image
@@ -156,7 +156,7 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
 
       {/* Content */}
       <div className="p-4">
-        <Link href={`/urun/${product.slug}`}>
+        <Link href={`/urunler/${product.slug}`}>
           <h3 className="font-semibold text-sm text-[#1C2840] line-clamp-2 mb-2 group-hover:text-[#166534] transition-colors min-h-[40px]">
             {product.name}
           </h3>
