@@ -6,10 +6,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ProductCard } from '@/components/shop/ProductCard'
 import { AddToCartButton } from './AddToCartButton'
+import { ProductImageGallery } from './ProductImageGallery'
 import { ProductReviews } from '@/components/shop/ProductReviews'
 import { StarRating } from '@/components/shop/StarRating'
 import { WishlistButton } from '@/components/shop/WishlistButton'
-import { Truck, RotateCcw, Shield, Check, Package, Star } from 'lucide-react'
+import { Truck, RotateCcw, Shield, Check, Star } from 'lucide-react'
 import { getSiteSettings } from '@/lib/settings'
 
 interface ProductPageProps {
@@ -117,57 +118,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
         {/* Product Details */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
           {/* Image Gallery */}
-          <div className="space-y-4">
-            {/* Main Image */}
-            <div className="relative aspect-square bg-white rounded-xl overflow-hidden shadow-sm">
-              {sortedImages[0] ? (
-                <Image
-                  src={sortedImages[0].url}
-                  alt={sortedImages[0].alt || product.name}
-                  fill
-                  className="object-contain p-4"
-                  priority
-                />
-              ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center text-gray-400">
-                  <Package className="w-20 h-20 mb-2" />
-                  <span>Görsel Yok</span>
-                </div>
-              )}
-              {/* Badges */}
-              <div className="absolute top-4 left-4 flex flex-col gap-2">
-                {product.is_new && (
-                  <span className="bg-[#1C2840] text-white text-xs px-3 py-1 rounded-full font-medium">
-                    Yeni
-                  </span>
-                )}
-                {product.compare_price && product.compare_price > product.price && (
-                  <span className="bg-[#BB1624] text-white text-xs px-3 py-1 rounded-full font-medium">
-                    %{Math.round((1 - product.price / product.compare_price) * 100)} İndirim
-                  </span>
-                )}
-              </div>
-            </div>
-
-            {/* Thumbnail Gallery */}
-            {sortedImages.length > 1 && (
-              <div className="grid grid-cols-4 gap-3">
-                {sortedImages.map((image: { id: string; url: string; alt: string | null }) => (
-                  <div
-                    key={image.id}
-                    className="relative aspect-square bg-white rounded-lg overflow-hidden cursor-pointer hover:ring-2 ring-[#BB1624] shadow-sm transition-all"
-                  >
-                    <Image
-                      src={image.url}
-                      alt={image.alt || product.name}
-                      fill
-                      className="object-contain p-2"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <ProductImageGallery
+            images={sortedImages}
+            productName={product.name}
+            isNew={product.is_new}
+            discountPercent={product.compare_price && product.compare_price > product.price ? Math.round((1 - product.price / product.compare_price) * 100) : undefined}
+          />
 
           {/* Product Info */}
           <div className="bg-white rounded-xl p-6 shadow-sm h-fit">
