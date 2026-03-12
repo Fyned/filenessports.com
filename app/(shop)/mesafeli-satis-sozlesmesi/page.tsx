@@ -22,9 +22,11 @@ export default function DistanceSalesAgreementPage() {
             <h3 className="text-lg font-semibold text-[#1C2840] mb-3">1.1 Satıcı Bilgileri</h3>
             <ul className="text-gray-600 space-y-2 mb-4">
               <li><strong>Unvan:</strong> Enes Sucu</li>
-              <li><strong>Adres:</strong> Namık Kemal Mah. 10. Sk. No 73/1 Daire 1, İstanbul</li>
+              <li><strong>Adres:</strong> Namık Kemal Mah. 10. Sk. Çınar Apt. No: 73/1 İç Kapı No: 1, Esenyurt/İstanbul</li>
               <li><strong>Telefon:</strong> +90 541 885 56 76</li>
               <li><strong>E-posta:</strong> info@fileenessports.com</li>
+              <li><strong>Vergi Dairesi:</strong> Avcılar Vergi Dairesi</li>
+              <li><strong>VKN:</strong> 7821336103</li>
               <li><strong>Ödeme Altyapısı:</strong> iyzico Ödeme Hizmetleri A.Ş.</li>
             </ul>
 
@@ -199,7 +201,7 @@ export default function DistanceSalesAgreementPage() {
             <ul className="text-gray-600 space-y-2">
               <li><strong>E-posta:</strong> info@fileenessports.com</li>
               <li><strong>Telefon:</strong> +90 541 885 56 76</li>
-              <li><strong>Adres:</strong> Namık Kemal Mah. 10. Sk. No 73/1 Daire 1, İstanbul</li>
+              <li><strong>Adres:</strong> Namık Kemal Mah. 10. Sk. Çınar Apt. No: 73/1 İç Kapı No: 1, Esenyurt/İstanbul</li>
             </ul>
           </section>
         </div>

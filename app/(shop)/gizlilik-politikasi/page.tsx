@@ -107,7 +107,7 @@ export default function PrivacyPage() {
             <ul className="text-gray-600 space-y-2">
               <li><strong>E-posta:</strong> kvkk@fileenessports.com</li>
               <li><strong>Telefon:</strong> +90 (212) 123 45 67</li>
-              <li><strong>Adres:</strong> Namık Kemal Mah. 10. Sk. No 73/1 Daire 1, İstanbul</li>
+              <li><strong>Adres:</strong> Namık Kemal Mah. 10. Sk. Çınar Apt. No: 73/1 İç Kapı No: 1, Esenyurt/İstanbul</li>
             </ul>
           </section>
 

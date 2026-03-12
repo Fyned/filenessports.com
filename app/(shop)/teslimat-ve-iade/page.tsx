@@ -180,7 +180,7 @@ export default function DeliveryReturnPage() {
               <li><strong>E-posta:</strong> info@fileenessports.com</li>
               <li><strong>Telefon:</strong> +90 541 885 56 76</li>
               <li><strong>Çalışma Saatleri:</strong> Pazartesi - Cumartesi, 09:00 - 18:00</li>
-              <li><strong>Adres:</strong> Namık Kemal Mah. 10. Sk. No 73/1 Daire 1, İstanbul</li>
+              <li><strong>Adres:</strong> Namık Kemal Mah. 10. Sk. Çınar Apt. No: 73/1 İç Kapı No: 1, Esenyurt/İstanbul</li>
             </ul>
           </section>
         </div>

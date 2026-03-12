@@ -23,7 +23,7 @@ const defaultSettings: SiteSettings = {
   phone: '+90 541 885 56 76',
   email: 'info@fileenessports.com',
   whatsapp: '+905418855676',
-  address: 'Namık Kemal Mah. 10. Sk. No 73/1 Daire 1, İstanbul',
+  address: 'Namık Kemal Mah. 10. Sk. Çınar Apt. No: 73/1 İç Kapı No: 1, Esenyurt/İstanbul',
   facebook: '',
   instagram: '',
   twitter: '',
