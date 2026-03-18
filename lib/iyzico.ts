@@ -110,15 +110,16 @@ function generatePKIString(request: any): string {
   return pki
 }
 
-// Authorization header oluşturma
-function generateAuthorizationHeaderV1(request: any): { authorization: string; randomKey: string } {
+// Authorization header oluşturma - V2 (HMAC-SHA256)
+function generateAuthorizationHeaderV2(endpoint: string, requestBody: string): { authorization: string; randomKey: string } {
   const randomKey = Date.now().toString() + Math.random().toString(36).substring(2, 8)
-  const pkiString = generatePKIString(request)
-  const hashString = API_KEY + randomKey + SECRET_KEY + pkiString
-  const hash = crypto.createHash('sha1').update(hashString, 'utf8').digest('base64')
+  const payload = randomKey + endpoint + requestBody
+  const signature = crypto.createHmac('sha256', SECRET_KEY).update(payload, 'utf8').digest('hex')
+  const authString = `apiKey:${API_KEY}&randomKey:${randomKey}&signature:${signature}`
+  const base64Auth = Buffer.from(authString).toString('base64')
 
   return {
-    authorization: `IYZWS ${API_KEY}:${hash}`,
+    authorization: `IYZWSv2 ${base64Auth}`,
     randomKey,
   }
 }
@@ -126,7 +127,8 @@ function generateAuthorizationHeaderV1(request: any): { authorization: string; r
 // iyzico API'ye istek gönderme
 async function makeRequest(endpoint: string, data: any): Promise<any> {
   const url = `${BASE_URL}${endpoint}`
-  const { authorization, randomKey } = generateAuthorizationHeaderV1(data)
+  const body = JSON.stringify(data)
+  const { authorization, randomKey } = generateAuthorizationHeaderV2(endpoint, body)
 
   try {
     const response = await fetch(url, {
@@ -138,7 +140,7 @@ async function makeRequest(endpoint: string, data: any): Promise<any> {
         'x-iyzi-rnd': randomKey,
         'x-iyzi-client-version': 'iyzipay-node-2.0.0',
       },
-      body: JSON.stringify(data),
+      body: body,
     })
 
     const result = await response.json()
