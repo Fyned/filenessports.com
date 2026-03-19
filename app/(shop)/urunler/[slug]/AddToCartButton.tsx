@@ -12,30 +12,42 @@ interface AddToCartButtonProps {
   product: Product
 }
 
+type Unit = 'cm' | 'm'
+
 export function AddToCartButton({ product }: AddToCartButtonProps) {
   const [quantity, setQuantity] = useState(1)
   const [added, setAdded] = useState(false)
   const [width, setWidth] = useState('')
   const [height, setHeight] = useState('')
+  const [unit, setUnit] = useState<Unit>('m')
   const addItem = useCartStore((state) => state.addItem)
 
   const isM2 = product.is_m2_pricing && product.price_per_m2
 
+  const toCm = (val: number) => unit === 'm' ? val * 100 : val
+  const fromCm = (val: number) => unit === 'm' ? val / 100 : val
+
+  const widthCm = toCm(parseFloat(width) || 0)
+  const heightCm = toCm(parseFloat(height) || 0)
+
   const m2Calc = useMemo(() => {
     if (!isM2) return null
-    const w = parseFloat(width)
-    const h = parseFloat(height)
-    if (!w || !h || w <= 0 || h <= 0) return null
-    const m2 = (w / 100) * (h / 100)
+    if (!widthCm || !heightCm || widthCm <= 0 || heightCm <= 0) return null
+    const m2 = (widthCm / 100) * (heightCm / 100)
     const total = Math.round(m2 * product.price_per_m2! * 100) / 100
     return { m2, total }
-  }, [width, height, isM2, product.price_per_m2])
+  }, [widthCm, heightCm, isM2, product.price_per_m2])
 
-  const widthNum = parseFloat(width) || 0
-  const heightNum = parseFloat(height) || 0
-  const widthValid = !isM2 || (widthNum >= product.min_width_cm && widthNum <= product.max_width_cm)
-  const heightValid = !isM2 || (heightNum >= product.min_height_cm && heightNum <= product.max_height_cm)
+  const widthValid = !isM2 || (widthCm >= product.min_width_cm && widthCm <= product.max_width_cm)
+  const heightValid = !isM2 || (heightCm >= product.min_height_cm && heightCm <= product.max_height_cm)
   const m2Valid = !isM2 || (m2Calc && widthValid && heightValid)
+
+  const minW = fromCm(product.min_width_cm)
+  const maxW = fromCm(product.max_width_cm)
+  const minH = fromCm(product.min_height_cm)
+  const maxH = fromCm(product.max_height_cm)
+  const unitLabel = unit === 'm' ? 'm' : 'cm'
+  const step = unit === 'm' ? '0.01' : '1'
 
   const handleAddToCart = () => {
     if (isM2 && !m2Valid) {
@@ -43,12 +55,12 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
       return
     }
 
-    const m2Options = isM2 ? { width: widthNum, height: heightNum } : undefined
+    const m2Options = isM2 ? { width: widthCm, height: heightCm } : undefined
     addItem(product, quantity, undefined, m2Options)
     setAdded(true)
 
     const desc = isM2 && m2Calc
-      ? `${widthNum}x${heightNum} cm = ${m2Calc.m2.toFixed(2)} m² — ${m2Calc.total.toLocaleString('tr-TR')} TL`
+      ? `${parseFloat(width)}×${parseFloat(height)} ${unitLabel} = ${m2Calc.m2.toFixed(2)} m² — ${m2Calc.total.toLocaleString('tr-TR')} TL`
       : product.name
 
     toast.success(`${quantity} adet urun sepete eklendi`, {
@@ -87,43 +99,63 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
       {/* M² Dimensions Input */}
       {isM2 && (
         <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-          <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
-            <Ruler className="w-4 h-4" />
-            <span>Özel Ölçü Girin</span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+              <Ruler className="w-4 h-4" />
+              <span>Özel Ölçü Girin</span>
+            </div>
+            <div className="flex items-center bg-white border rounded-lg overflow-hidden text-sm">
+              <button
+                type="button"
+                onClick={() => { setUnit('cm'); setWidth(''); setHeight('') }}
+                className={`px-3 py-1.5 font-medium transition-colors ${unit === 'cm' ? 'bg-[#BB1624] text-white' : 'text-gray-600 hover:bg-gray-50'}`}
+              >
+                cm
+              </button>
+              <button
+                type="button"
+                onClick={() => { setUnit('m'); setWidth(''); setHeight('') }}
+                className={`px-3 py-1.5 font-medium transition-colors ${unit === 'm' ? 'bg-[#BB1624] text-white' : 'text-gray-600 hover:bg-gray-50'}`}
+              >
+                metre
+              </button>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs text-gray-500 mb-1 block">Genişlik (cm)</label>
+              <label className="text-xs text-gray-500 mb-1 block">Genişlik ({unitLabel})</label>
               <Input
                 type="number"
-                min={product.min_width_cm}
-                max={product.max_width_cm}
+                step={step}
+                min={minW}
+                max={maxW}
                 value={width}
                 onChange={(e) => setWidth(e.target.value)}
-                placeholder={`${product.min_width_cm}-${product.max_width_cm}`}
+                placeholder={`${minW}–${maxW}`}
                 className={!widthValid && width ? 'border-red-400' : ''}
               />
               {!widthValid && width && (
                 <p className="text-xs text-red-500 mt-1">
-                  {product.min_width_cm}-{product.max_width_cm} cm arası
+                  {minW}–{maxW} {unitLabel} arası
                 </p>
               )}
             </div>
             <div>
-              <label className="text-xs text-gray-500 mb-1 block">Yükseklik (cm)</label>
+              <label className="text-xs text-gray-500 mb-1 block">Yükseklik ({unitLabel})</label>
               <Input
                 type="number"
-                min={product.min_height_cm}
-                max={product.max_height_cm}
+                step={step}
+                min={minH}
+                max={maxH}
                 value={height}
                 onChange={(e) => setHeight(e.target.value)}
-                placeholder={`${product.min_height_cm}-${product.max_height_cm}`}
+                placeholder={`${minH}–${maxH}`}
                 className={!heightValid && height ? 'border-red-400' : ''}
               />
               {!heightValid && height && (
                 <p className="text-xs text-red-500 mt-1">
-                  {product.min_height_cm}-{product.max_height_cm} cm arası
+                  {minH}–{maxH} {unitLabel} arası
                 </p>
               )}
             </div>

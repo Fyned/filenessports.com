@@ -167,7 +167,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                     <span className="text-lg text-gray-500">/ m²</span>
                   </div>
                   <p className="text-sm text-gray-500 mt-1">
-                    Ölçü girerek fiyat hesaplayın ({product.min_width_cm}–{product.max_width_cm} cm × {product.min_height_cm}–{product.max_height_cm} cm)
+                    Ölçü girerek fiyat hesaplayın ({(product.min_width_cm / 100).toLocaleString('tr-TR')}–{(product.max_width_cm / 100).toLocaleString('tr-TR')} m × {(product.min_height_cm / 100).toLocaleString('tr-TR')}–{(product.max_height_cm / 100).toLocaleString('tr-TR')} m)
                   </p>
                 </div>
               ) : (
