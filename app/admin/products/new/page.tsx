@@ -44,10 +44,10 @@ export default function NewProductPage() {
     free_shipping: false,
     is_m2_pricing: false,
     price_per_m2: '',
-    min_width_cm: '10',
-    max_width_cm: '2000',
-    min_height_cm: '10',
-    max_height_cm: '2000',
+    min_width_m: '0.1',
+    max_width_m: '20',
+    min_height_m: '0.1',
+    max_height_m: '20',
     meta_title: '',
     meta_description: '',
   })
@@ -88,23 +88,23 @@ export default function NewProductPage() {
 
   useEffect(() => {
     if (formData.is_m2_pricing && formData.price_per_m2) {
-      const minM2 = (parseInt(formData.min_width_cm) || 10) / 100 * (parseInt(formData.min_height_cm) || 10) / 100
+      const minM2 = (parseFloat(formData.min_width_m) || 0.1) * (parseFloat(formData.min_height_m) || 0.1)
       const autoPrice = Math.round(minM2 * parseFloat(formData.price_per_m2) * 100) / 100
       if (!isNaN(autoPrice) && autoPrice > 0) {
         setFormData(prev => ({ ...prev, price: autoPrice.toString() }))
       }
     }
-  }, [formData.is_m2_pricing, formData.price_per_m2, formData.min_width_cm, formData.min_height_cm])
+  }, [formData.is_m2_pricing, formData.price_per_m2, formData.min_width_m, formData.min_height_m])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
 
     try {
-      // Auto-calculate price for m² products
+      // Auto-calculate price for m² products (convert m to cm for DB)
       let finalPrice = parseFloat(formData.price)
       if (formData.is_m2_pricing && formData.price_per_m2) {
-        const minM2 = (parseInt(formData.min_width_cm) || 10) / 100 * (parseInt(formData.min_height_cm) || 10) / 100
+        const minM2 = (parseFloat(formData.min_width_m) || 0.1) * (parseFloat(formData.min_height_m) || 0.1)
         finalPrice = Math.round(minM2 * parseFloat(formData.price_per_m2) * 100) / 100
       }
 
@@ -126,10 +126,10 @@ export default function NewProductPage() {
           free_shipping: formData.free_shipping,
           is_m2_pricing: formData.is_m2_pricing,
           price_per_m2: formData.price_per_m2 ? parseFloat(formData.price_per_m2) : null,
-          min_width_cm: parseInt(formData.min_width_cm) || 10,
-          max_width_cm: parseInt(formData.max_width_cm) || 2000,
-          min_height_cm: parseInt(formData.min_height_cm) || 10,
-          max_height_cm: parseInt(formData.max_height_cm) || 2000,
+          min_width_cm: Math.round((parseFloat(formData.min_width_m) || 0.1) * 100),
+          max_width_cm: Math.round((parseFloat(formData.max_width_m) || 20) * 100),
+          min_height_cm: Math.round((parseFloat(formData.min_height_m) || 0.1) * 100),
+          max_height_cm: Math.round((parseFloat(formData.max_height_m) || 20) * 100),
           meta_title: formData.meta_title || null,
           meta_description: formData.meta_description || null,
         })
@@ -306,45 +306,49 @@ export default function NewProductPage() {
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <Label htmlFor="min_width_cm">Min Genişlik (cm)</Label>
+                          <Label htmlFor="min_width_m">Min Genişlik (m)</Label>
                           <Input
-                            id="min_width_cm"
+                            id="min_width_m"
                             type="number"
-                            min="1"
-                            value={formData.min_width_cm}
-                            onChange={(e) => setFormData({ ...formData, min_width_cm: e.target.value })}
+                            step="0.01"
+                            min="0.01"
+                            value={formData.min_width_m}
+                            onChange={(e) => setFormData({ ...formData, min_width_m: e.target.value })}
                           />
                         </div>
                         <div>
-                          <Label htmlFor="max_width_cm">Max Genişlik (cm)</Label>
+                          <Label htmlFor="max_width_m">Max Genişlik (m)</Label>
                           <Input
-                            id="max_width_cm"
+                            id="max_width_m"
                             type="number"
-                            min="1"
-                            value={formData.max_width_cm}
-                            onChange={(e) => setFormData({ ...formData, max_width_cm: e.target.value })}
+                            step="0.01"
+                            min="0.01"
+                            value={formData.max_width_m}
+                            onChange={(e) => setFormData({ ...formData, max_width_m: e.target.value })}
                           />
                         </div>
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <Label htmlFor="min_height_cm">Min Yükseklik (cm)</Label>
+                          <Label htmlFor="min_height_m">Min Yükseklik (m)</Label>
                           <Input
-                            id="min_height_cm"
+                            id="min_height_m"
                             type="number"
-                            min="1"
-                            value={formData.min_height_cm}
-                            onChange={(e) => setFormData({ ...formData, min_height_cm: e.target.value })}
+                            step="0.01"
+                            min="0.01"
+                            value={formData.min_height_m}
+                            onChange={(e) => setFormData({ ...formData, min_height_m: e.target.value })}
                           />
                         </div>
                         <div>
-                          <Label htmlFor="max_height_cm">Max Yükseklik (cm)</Label>
+                          <Label htmlFor="max_height_m">Max Yükseklik (m)</Label>
                           <Input
-                            id="max_height_cm"
+                            id="max_height_m"
                             type="number"
-                            min="1"
-                            value={formData.max_height_cm}
-                            onChange={(e) => setFormData({ ...formData, max_height_cm: e.target.value })}
+                            step="0.01"
+                            min="0.01"
+                            value={formData.max_height_m}
+                            onChange={(e) => setFormData({ ...formData, max_height_m: e.target.value })}
                           />
                         </div>
                       </div>
