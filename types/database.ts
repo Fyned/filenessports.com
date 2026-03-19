@@ -38,6 +38,12 @@ export interface Product {
   is_featured: boolean
   is_new: boolean
   free_shipping: boolean
+  is_m2_pricing: boolean
+  price_per_m2: number | null
+  min_width_cm: number
+  max_width_cm: number
+  min_height_cm: number
+  max_height_cm: number
   meta_title: string | null
   meta_description: string | null
   tags: string[] | null
@@ -197,6 +203,12 @@ export interface OrderItem {
   quantity: number
   unit_price: number
   total_price: number
+  custom_dimensions: {
+    width_cm: number
+    height_cm: number
+    m2: number
+    price_per_m2: number
+  } | null
   created_at: string
 }
 

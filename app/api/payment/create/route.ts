@@ -216,6 +216,7 @@ export async function POST(request: NextRequest) {
       quantity: item.quantity,
       unit_price: item.price,
       total_price: item.price * item.quantity,
+      custom_dimensions: item.customDimensions || null,
     }))
 
     await supabaseAdmin.from('order_items').insert(orderItems)

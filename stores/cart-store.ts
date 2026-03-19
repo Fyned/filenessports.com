@@ -7,6 +7,10 @@ export interface CartItem {
   product: Product
   variant?: ProductVariant
   quantity: number
+  customWidth?: number
+  customHeight?: number
+  m2?: number
+  unitPrice?: number
 }
 
 export interface AppliedCoupon {
@@ -21,7 +25,7 @@ export interface AppliedCoupon {
 interface CartStore {
   items: CartItem[]
   coupon: AppliedCoupon | null
-  addItem: (product: Product, quantity?: number, variant?: ProductVariant) => void
+  addItem: (product: Product, quantity?: number, variant?: ProductVariant, m2Options?: { width: number; height: number }) => void
   removeItem: (itemId: string) => void
   updateQuantity: (itemId: string, quantity: number) => void
   clearCart: () => void
@@ -38,12 +42,17 @@ export const useCartStore = create<CartStore>()(
       items: [],
       coupon: null,
 
-      addItem: (product, quantity = 1, variant) => {
+      addItem: (product, quantity = 1, variant, m2Options) => {
         const items = get().items
+
+        const m2 = m2Options ? (m2Options.width / 100) * (m2Options.height / 100) : undefined
+        const unitPrice = m2 && product.price_per_m2 ? Math.round(m2 * product.price_per_m2 * 100) / 100 : undefined
+
         const existingItemIndex = items.findIndex(
           (item) =>
             item.product.id === product.id &&
-            (variant ? item.variant?.id === variant.id : !item.variant)
+            (variant ? item.variant?.id === variant.id : !item.variant) &&
+            (m2Options ? item.customWidth === m2Options.width && item.customHeight === m2Options.height : !item.m2)
         )
 
         if (existingItemIndex > -1) {
@@ -56,6 +65,12 @@ export const useCartStore = create<CartStore>()(
             product,
             variant,
             quantity,
+            ...(m2Options && {
+              customWidth: m2Options.width,
+              customHeight: m2Options.height,
+              m2,
+              unitPrice,
+            }),
           }
           set({ items: [...items, newItem] })
         }
@@ -83,7 +98,7 @@ export const useCartStore = create<CartStore>()(
 
       getSubtotal: () => {
         return get().items.reduce((total, item) => {
-          const price = item.variant?.price || item.product.price
+          const price = item.unitPrice ?? (item.variant?.price || item.product.price)
           return total + price * item.quantity
         }, 0)
       },

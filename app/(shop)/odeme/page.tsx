@@ -197,9 +197,17 @@ export default function CheckoutPage() {
         name: item.product.name,
         variantName: item.variant?.name,
         sku: item.product.sku,
-        price: item.variant?.price || item.product.price,
+        price: item.unitPrice ?? (item.variant?.price || item.product.price),
         quantity: item.quantity,
         category: item.product.category?.name,
+        ...(item.m2 && {
+          customDimensions: {
+            width_cm: item.customWidth,
+            height_cm: item.customHeight,
+            m2: item.m2,
+            price_per_m2: item.product.price_per_m2,
+          },
+        }),
       }))
 
       const response = await fetch('/api/payment/create', {

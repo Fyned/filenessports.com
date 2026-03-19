@@ -130,7 +130,7 @@ export function CartClient({ freeShippingThreshold, defaultShippingCost }: CartC
         {/* Cart Items */}
         <div className="lg:col-span-2 space-y-4">
           {items.map((item) => {
-            const price = item.variant?.price || item.product.price
+            const price = item.unitPrice ?? (item.variant?.price || item.product.price)
             const comparePrice = item.product.compare_price
             const imageUrl = item.product.images?.[0]?.url || '/images/placeholder-product.svg'
 
@@ -160,6 +160,12 @@ export function CartClient({ freeShippingThreshold, defaultShippingCost }: CartC
 
                   {item.variant && (
                     <p className="text-sm text-gray-500 mt-1">{item.variant.name}</p>
+                  )}
+
+                  {item.m2 && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      📐 {item.customWidth} × {item.customHeight} cm = {item.m2.toFixed(2)} m²
+                    </p>
                   )}
 
                   <div className="flex items-center gap-2 mt-2">

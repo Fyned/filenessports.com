@@ -42,6 +42,12 @@ export default function NewProductPage() {
     is_featured: false,
     is_new: false,
     free_shipping: false,
+    is_m2_pricing: false,
+    price_per_m2: '',
+    min_width_cm: '10',
+    max_width_cm: '2000',
+    min_height_cm: '10',
+    max_height_cm: '2000',
     meta_title: '',
     meta_description: '',
   })
@@ -101,6 +107,12 @@ export default function NewProductPage() {
           is_featured: formData.is_featured,
           is_new: formData.is_new,
           free_shipping: formData.free_shipping,
+          is_m2_pricing: formData.is_m2_pricing,
+          price_per_m2: formData.price_per_m2 ? parseFloat(formData.price_per_m2) : null,
+          min_width_cm: parseInt(formData.min_width_cm) || 10,
+          max_width_cm: parseInt(formData.max_width_cm) || 2000,
+          min_height_cm: parseInt(formData.min_height_cm) || 10,
+          max_height_cm: parseInt(formData.max_height_cm) || 2000,
           meta_title: formData.meta_title || null,
           meta_description: formData.meta_description || null,
         })
@@ -236,6 +248,84 @@ export default function NewProductPage() {
                       }
                     />
                   </div>
+                </div>
+
+                {/* M² Pricing Toggle */}
+                <div className="border-t pt-4 mt-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <Label>M² Bazlı Fiyatlandırma</Label>
+                      <p className="text-xs text-gray-500">Özel ölçülü ürünler için (file, branda vb.)</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, is_m2_pricing: !formData.is_m2_pricing })}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${formData.is_m2_pricing ? 'bg-[#BB1624]' : 'bg-gray-200'}`}
+                    >
+                      <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${formData.is_m2_pricing ? 'translate-x-6' : 'translate-x-1'}`} />
+                    </button>
+                  </div>
+
+                  {formData.is_m2_pricing && (
+                    <div className="space-y-3 bg-gray-50 rounded-lg p-3">
+                      <div>
+                        <Label htmlFor="price_per_m2">m² Fiyatı (TL) *</Label>
+                        <Input
+                          id="price_per_m2"
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={formData.price_per_m2}
+                          onChange={(e) => setFormData({ ...formData, price_per_m2: e.target.value })}
+                          placeholder="Örn: 24.00"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <Label htmlFor="min_width_cm">Min Genişlik (cm)</Label>
+                          <Input
+                            id="min_width_cm"
+                            type="number"
+                            min="1"
+                            value={formData.min_width_cm}
+                            onChange={(e) => setFormData({ ...formData, min_width_cm: e.target.value })}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="max_width_cm">Max Genişlik (cm)</Label>
+                          <Input
+                            id="max_width_cm"
+                            type="number"
+                            min="1"
+                            value={formData.max_width_cm}
+                            onChange={(e) => setFormData({ ...formData, max_width_cm: e.target.value })}
+                          />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <Label htmlFor="min_height_cm">Min Yükseklik (cm)</Label>
+                          <Input
+                            id="min_height_cm"
+                            type="number"
+                            min="1"
+                            value={formData.min_height_cm}
+                            onChange={(e) => setFormData({ ...formData, min_height_cm: e.target.value })}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="max_height_cm">Max Yükseklik (cm)</Label>
+                          <Input
+                            id="max_height_cm"
+                            type="number"
+                            min="1"
+                            value={formData.max_height_cm}
+                            onChange={(e) => setFormData({ ...formData, max_height_cm: e.target.value })}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
