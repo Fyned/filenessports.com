@@ -81,23 +81,40 @@ export function ProductCard({ product, showAddToCart = false }: ProductCardProps
           <p className="text-sm text-gray-500 mt-1">{product.category.name}</p>
         )}
         <div className="mt-2 flex items-center gap-2">
-          <span className="text-lg font-bold text-[#BB1624]">
-            {product.price.toLocaleString('tr-TR')} TL
-          </span>
-          {product.compare_price && product.compare_price > product.price && (
-            <span className="text-sm text-gray-400 line-through">
-              {product.compare_price.toLocaleString('tr-TR')} TL
-            </span>
+          {product.is_m2_pricing && product.price_per_m2 ? (
+            <>
+              <span className="text-lg font-bold text-[#BB1624]">
+                {product.price_per_m2.toLocaleString('tr-TR')} TL
+              </span>
+              <span className="text-sm text-gray-500">/ m²</span>
+            </>
+          ) : (
+            <>
+              <span className="text-lg font-bold text-[#BB1624]">
+                {product.price.toLocaleString('tr-TR')} TL
+              </span>
+              {product.compare_price && product.compare_price > product.price && (
+                <span className="text-sm text-gray-400 line-through">
+                  {product.compare_price.toLocaleString('tr-TR')} TL
+                </span>
+              )}
+            </>
           )}
         </div>
         {showAddToCart && product.stock > 0 && (
-          <Button
-            onClick={handleAddToCart}
-            className="mt-4 w-full bg-[#BB1624] hover:bg-[#8F101B]"
-          >
-            <ShoppingCart className="w-4 h-4 mr-2" />
-            Sepete Ekle
-          </Button>
+          product.is_m2_pricing ? (
+            <span className="mt-4 block w-full text-center text-sm text-[#BB1624] font-medium py-2 border border-[#BB1624] rounded-md hover:bg-[#BB1624]/5 transition">
+              Ölçü Seç →
+            </span>
+          ) : (
+            <Button
+              onClick={handleAddToCart}
+              className="mt-4 w-full bg-[#BB1624] hover:bg-[#8F101B]"
+            >
+              <ShoppingCart className="w-4 h-4 mr-2" />
+              Sepete Ekle
+            </Button>
+          )
         )}
       </div>
     </Link>

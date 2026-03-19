@@ -636,6 +636,11 @@ export default function CheckoutPage() {
                           {item.variant && (
                             <p className="text-xs text-gray-500">{item.variant.name}</p>
                           )}
+                          {item.m2 && (
+                            <p className="text-xs text-gray-500">
+                              {item.customWidth} × {item.customHeight} cm = {item.m2.toFixed(2)} m²
+                            </p>
+                          )}
                           <p className="text-sm font-medium">{formatPrice(price * item.quantity)}</p>
                         </div>
                       </div>

@@ -131,11 +131,28 @@ export default function EditProductPage({ params }: PageProps) {
     fetchData()
   }, [id, supabase, router])
 
+  useEffect(() => {
+    if (formData.is_m2_pricing && formData.price_per_m2) {
+      const minM2 = (parseInt(formData.min_width_cm) || 10) / 100 * (parseInt(formData.min_height_cm) || 10) / 100
+      const autoPrice = Math.round(minM2 * parseFloat(formData.price_per_m2) * 100) / 100
+      if (!isNaN(autoPrice) && autoPrice > 0) {
+        setFormData(prev => ({ ...prev, price: autoPrice.toString() }))
+      }
+    }
+  }, [formData.is_m2_pricing, formData.price_per_m2, formData.min_width_cm, formData.min_height_cm])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
 
     try {
+      // Auto-calculate price for m² products
+      let finalPrice = parseFloat(formData.price)
+      if (formData.is_m2_pricing && formData.price_per_m2) {
+        const minM2 = (parseInt(formData.min_width_cm) || 10) / 100 * (parseInt(formData.min_height_cm) || 10) / 100
+        finalPrice = Math.round(minM2 * parseFloat(formData.price_per_m2) * 100) / 100
+      }
+
       // Update product
       const { error } = await supabase
         .from('products')
@@ -144,7 +161,7 @@ export default function EditProductPage({ params }: PageProps) {
           slug: formData.slug,
           description: formData.description || null,
           short_description: formData.short_description || null,
-          price: parseFloat(formData.price),
+          price: finalPrice,
           compare_price: formData.compare_price ? parseFloat(formData.compare_price) : null,
           sku: formData.sku || null,
           stock: parseInt(formData.stock),
@@ -325,7 +342,9 @@ export default function EditProductPage({ params }: PageProps) {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="price">Fiyat (TL) *</Label>
+                    <Label htmlFor="price">
+                      {formData.is_m2_pricing ? 'Başlangıç Fiyatı (TL) — otomatik' : 'Fiyat (TL) *'}
+                    </Label>
                     <Input
                       id="price"
                       type="number"
@@ -334,7 +353,12 @@ export default function EditProductPage({ params }: PageProps) {
                       value={formData.price}
                       onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                       required
+                      disabled={formData.is_m2_pricing}
+                      className={formData.is_m2_pricing ? 'bg-gray-100' : ''}
                     />
+                    {formData.is_m2_pricing && (
+                      <p className="text-xs text-gray-400 mt-1">Min ölçülerden otomatik hesaplanır</p>
+                    )}
                   </div>
                   <div>
                     <Label htmlFor="compare_price">Karşılaştırma Fiyatı (TL)</Label>

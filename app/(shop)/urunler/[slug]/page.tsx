@@ -158,16 +158,30 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
             {/* Price */}
             <div className="mb-6 pb-6 border-b">
-              <div className="flex items-center gap-3">
-                <span className="text-3xl font-bold text-[#BB1624]">
-                  {product.price.toLocaleString('tr-TR')} TL
-                </span>
-                {product.compare_price && product.compare_price > product.price && (
-                  <span className="text-xl text-gray-400 line-through">
-                    {product.compare_price.toLocaleString('tr-TR')} TL
+              {product.is_m2_pricing && product.price_per_m2 ? (
+                <div>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-3xl font-bold text-[#BB1624]">
+                      {product.price_per_m2.toLocaleString('tr-TR')} TL
+                    </span>
+                    <span className="text-lg text-gray-500">/ m²</span>
+                  </div>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Ölçü girerek fiyat hesaplayın ({product.min_width_cm}–{product.max_width_cm} cm × {product.min_height_cm}–{product.max_height_cm} cm)
+                  </p>
+                </div>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl font-bold text-[#BB1624]">
+                    {product.price.toLocaleString('tr-TR')} TL
                   </span>
-                )}
-              </div>
+                  {product.compare_price && product.compare_price > product.price && (
+                    <span className="text-xl text-gray-400 line-through">
+                      {product.compare_price.toLocaleString('tr-TR')} TL
+                    </span>
+                  )}
+                </div>
+              )}
               {product.free_shipping && (
                 <div className="flex items-center gap-2 mt-2 text-green-600 text-sm">
                   <Truck className="w-4 h-4" />
