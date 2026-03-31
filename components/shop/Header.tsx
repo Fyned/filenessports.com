@@ -19,9 +19,11 @@ import {
 
 interface HeaderProps {
   freeShippingThreshold?: number
+  phone?: string
+  email?: string
 }
 
-export function Header({ freeShippingThreshold = 500 }: HeaderProps) {
+export function Header({ freeShippingThreshold = 500, phone = '+90 541 885 56 76', email = 'info@fileenessports.com' }: HeaderProps) {
   const [categories, setCategories] = useState<Category[]>([])
   const [isScrolled, setIsScrolled] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -82,13 +84,13 @@ export function Header({ freeShippingThreshold = 500 }: HeaderProps) {
           <div className="flex items-center justify-between py-2">
             {/* Left - Contact Info */}
             <div className="hidden md:flex items-center gap-6">
-              <a href="tel:+905418855676" className="flex items-center gap-2 hover:text-[#BB1624] transition-colors">
+              <a href={`tel:${phone.replace(/\s/g, '')}`} className="flex items-center gap-2 hover:text-[#BB1624] transition-colors">
                 <Phone className="w-4 h-4" />
-                <span>+90 541 885 56 76</span>
+                <span>{phone}</span>
               </a>
-              <a href="mailto:info@fileenessports.com" className="flex items-center gap-2 hover:text-[#BB1624] transition-colors">
+              <a href={`mailto:${email}`} className="flex items-center gap-2 hover:text-[#BB1624] transition-colors">
                 <Mail className="w-4 h-4" />
-                <span>info@fileenessports.com</span>
+                <span>{email}</span>
               </a>
             </div>
 
@@ -348,13 +350,13 @@ export function Header({ freeShippingThreshold = 500 }: HeaderProps) {
 
           {/* Mobile Menu Footer */}
           <div className="p-4 mt-auto border-t bg-gray-50">
-            <a href="tel:+905418855676" className="flex items-center gap-3 text-[#1C2840] mb-3">
+            <a href={`tel:${phone.replace(/\s/g, '')}`} className="flex items-center gap-3 text-[#1C2840] mb-3">
               <Phone className="w-5 h-5" />
-              <span>+90 541 885 56 76</span>
+              <span>{phone}</span>
             </a>
-            <a href="mailto:info@fileenessports.com" className="flex items-center gap-3 text-[#1C2840]">
+            <a href={`mailto:${email}`} className="flex items-center gap-3 text-[#1C2840]">
               <Mail className="w-5 h-5" />
-              <span>info@fileenessports.com</span>
+              <span>{email}</span>
             </a>
           </div>
         </nav>

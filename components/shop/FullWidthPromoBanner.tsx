@@ -120,14 +120,15 @@ export function FullWidthPromoBanner({
 }
 
 // Preset banner configurations
-export function CustomOrderBanner() {
+export function CustomOrderBanner({ phone = '+905418855676' }: { phone?: string }) {
+  const phoneClean = phone.replace(/\s/g, '')
   return (
     <FullWidthPromoBanner
       subtitle="ÖZEL SİPARİŞ"
       title="İstediğiniz Ölçüde File Üretiyoruz!"
       description="Standart ölçüler size uymuyorsa, özel ölçülerinize göre profesyonel spor fileleri üretiyoruz. Hemen bizimle iletişime geçin!"
       primaryButtonText="Bizi Arayın"
-      primaryButtonLink="tel:+905418855676"
+      primaryButtonLink={`tel:${phoneClean}`}
       secondaryButtonText="Teklif Alın"
       secondaryButtonLink="/iletisim"
       gradientFrom="#1C2840"

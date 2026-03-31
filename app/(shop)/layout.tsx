@@ -8,10 +8,14 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
 
   return (
     <>
-      <Header freeShippingThreshold={settings.free_shipping_threshold} />
+      <Header
+        freeShippingThreshold={settings.free_shipping_threshold}
+        phone={settings.phone}
+        email={settings.email}
+      />
       <main className="min-h-screen">{children}</main>
-      <Footer />
-      <WhatsAppButton />
+      <Footer settings={settings} />
+      <WhatsAppButton whatsapp={settings.whatsapp} />
     </>
   )
 }

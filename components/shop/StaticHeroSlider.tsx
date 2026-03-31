@@ -17,65 +17,75 @@ interface HeroSlide {
   secondaryButtonLink?: string
 }
 
-// Statik slider verileri - görsel bağımsız
-const heroSlides: HeroSlide[] = [
-  {
-    id: '1',
-    icon: '⚽',
-    title: 'Profesyonel Spor Fileleri',
-    subtitle: 'Türkiye\'nin 1 numaralı file üreticisi. Kaliteli malzeme, uygun fiyat, hızlı teslimat!',
-    gradientFrom: '#1C2840',
-    gradientTo: '#2A3A5A',
-    buttonText: 'Ürünleri İncele',
-    buttonLink: '/urunler',
-  },
-  {
-    id: '2',
-    icon: '🏆',
-    title: 'Kalite ve Güven',
-    subtitle: 'UEFA ve TFF standartlarına uygun üretim. 10 yılı aşkın tecrübe ile hizmetinizdeyiz.',
-    gradientFrom: '#BB1624',
-    gradientTo: '#8F101B',
-    buttonText: 'Hakkımızda',
-    buttonLink: '/hakkimizda',
-    secondaryButtonText: 'Bizi Arayın',
-    secondaryButtonLink: 'tel:+905418855676',
-  },
-  {
-    id: '3',
-    icon: '🚚',
-    title: 'Ücretsiz Kargo',
-    subtitle: '5.000 TL ve üzeri siparişlerinizde kargo tamamen ücretsiz!',
-    gradientFrom: '#166534',
-    gradientTo: '#15803d',
-    buttonText: 'Alışverişe Başla',
-    buttonLink: '/urunler',
-  },
-  {
-    id: '4',
-    icon: '🎯',
-    title: 'Özel Ölçü Üretim',
-    subtitle: 'Standart ölçüler size uymuyorsa, istediğiniz ölçüde özel sipariş verebilirsiniz.',
-    gradientFrom: '#7c3aed',
-    gradientTo: '#8b5cf6',
-    buttonText: 'Teklif Alın',
-    buttonLink: '/iletisim',
-    secondaryButtonText: 'WhatsApp',
-    secondaryButtonLink: 'https://wa.me/905418855676',
-  },
-]
+function getHeroSlides(phoneClean: string, whatsappNum: string, freeShippingThreshold: number): HeroSlide[] {
+  return [
+    {
+      id: '1',
+      icon: '⚽',
+      title: 'Profesyonel Spor Fileleri',
+      subtitle: 'Türkiye\'nin 1 numaralı file üreticisi. Kaliteli malzeme, uygun fiyat, hızlı teslimat!',
+      gradientFrom: '#1C2840',
+      gradientTo: '#2A3A5A',
+      buttonText: 'Ürünleri İncele',
+      buttonLink: '/urunler',
+    },
+    {
+      id: '2',
+      icon: '🏆',
+      title: 'Kalite ve Güven',
+      subtitle: 'UEFA ve TFF standartlarına uygun üretim. 10 yılı aşkın tecrübe ile hizmetinizdeyiz.',
+      gradientFrom: '#BB1624',
+      gradientTo: '#8F101B',
+      buttonText: 'Hakkımızda',
+      buttonLink: '/hakkimizda',
+      secondaryButtonText: 'Bizi Arayın',
+      secondaryButtonLink: `tel:${phoneClean}`,
+    },
+    {
+      id: '3',
+      icon: '🚚',
+      title: 'Ücretsiz Kargo',
+      subtitle: `${freeShippingThreshold.toLocaleString('tr-TR')} TL ve üzeri siparişlerinizde kargo tamamen ücretsiz!`,
+      gradientFrom: '#166534',
+      gradientTo: '#15803d',
+      buttonText: 'Alışverişe Başla',
+      buttonLink: '/urunler',
+    },
+    {
+      id: '4',
+      icon: '🎯',
+      title: 'Özel Ölçü Üretim',
+      subtitle: 'Standart ölçüler size uymuyorsa, istediğiniz ölçüde özel sipariş verebilirsiniz.',
+      gradientFrom: '#7c3aed',
+      gradientTo: '#8b5cf6',
+      buttonText: 'Teklif Alın',
+      buttonLink: '/iletisim',
+      secondaryButtonText: 'WhatsApp',
+      secondaryButtonLink: `https://wa.me/${whatsappNum}`,
+    },
+  ]
+}
 
-export function StaticHeroSlider() {
+interface StaticHeroSliderProps {
+  phone?: string
+  whatsapp?: string
+  freeShippingThreshold?: number
+}
+
+export function StaticHeroSlider({ phone = '+905418855676', whatsapp = '905418855676', freeShippingThreshold = 5000 }: StaticHeroSliderProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
+  const whatsappNum = whatsapp.replace(/[^0-9]/g, '')
+  const phoneClean = phone.replace(/\s/g, '')
+  const heroSlides = getHeroSlides(phoneClean, whatsappNum, freeShippingThreshold)
 
   const goToNext = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % heroSlides.length)
-  }, [])
+  }, [heroSlides.length])
 
   const goToPrev = useCallback(() => {
     setCurrentIndex((prev) => (prev - 1 + heroSlides.length) % heroSlides.length)
-  }, [])
+  }, [heroSlides.length])
 
   const goToSlide = (index: number) => {
     setCurrentIndex(index)

@@ -39,6 +39,8 @@ export default function CheckoutPage() {
   const [cardInfo, setCardInfo] = useState({ cardType: '', bankName: '' })
   const [couponCode, setCouponCode] = useState('')
   const [couponLoading, setCouponLoading] = useState(false)
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState(5000)
+  const [defaultShippingCost, setDefaultShippingCost] = useState(49.90)
 
   // Form state
   const [formData, setFormData] = useState({
@@ -66,10 +68,23 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     setMounted(true)
-    // Load coupon code from store if exists
     if (coupon?.code) {
       setCouponCode(coupon.code)
     }
+    fetch('/api/admin/settings')
+      .then(res => res.json())
+      .then((data: { key: string; value: string }[]) => {
+        if (Array.isArray(data)) {
+          data.forEach(item => {
+            try {
+              const val = JSON.parse(item.value)
+              if (item.key === 'free_shipping_threshold') setFreeShippingThreshold(Number(val) || 5000)
+              if (item.key === 'default_shipping_cost') setDefaultShippingCost(Number(val) || 49.90)
+            } catch {}
+          })
+        }
+      })
+      .catch(() => {})
   }, [coupon])
 
   const handleApplyCoupon = async () => {
@@ -140,7 +155,7 @@ export default function CheckoutPage() {
       const subtotalForCalc = getSubtotal()
       const discountForCalc = coupon?.discountAmount || 0
       const afterDiscountForCalc = subtotalForCalc - discountForCalc
-      const shippingForCalc = afterDiscountForCalc >= 150 ? 0 : 29.90
+      const shippingForCalc = afterDiscountForCalc >= freeShippingThreshold ? 0 : defaultShippingCost
       const totalForCalc = afterDiscountForCalc + shippingForCalc
 
       const response = await fetch('/api/payment/installments', {
@@ -295,7 +310,7 @@ export default function CheckoutPage() {
   const subtotal = getSubtotal()
   const discountAmount = coupon?.discountAmount || 0
   const afterDiscount = subtotal - discountAmount
-  const shippingCost = afterDiscount >= 150 ? 0 : 29.90
+  const shippingCost = afterDiscount >= freeShippingThreshold ? 0 : defaultShippingCost
   const total = afterDiscount + shippingCost
 
   const cities = [

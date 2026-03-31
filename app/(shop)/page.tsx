@@ -12,6 +12,7 @@ import { StaticHeroSlider } from '@/components/shop/StaticHeroSlider'
 import { PromoBannerGrid } from '@/components/shop/PromoBannerGrid'
 import { CategoryProductBlock } from '@/components/shop/CategoryProductBlock'
 import { CustomOrderBanner } from '@/components/shop/FullWidthPromoBanner'
+import { getSiteSettings } from '@/lib/settings'
 
 interface Product {
   id: string
@@ -66,6 +67,7 @@ export default async function HomePage() {
   let tavanProducts: Product[] = []
   let blogPosts: BlogPost[] = []
   let banners: Banner[] = []
+  const settings = await getSiteSettings()
 
   try {
     const supabase = await createClient()
@@ -187,14 +189,14 @@ export default async function HomePage() {
       {banners && banners.length > 0 ? (
         <HeroSlider banners={banners} />
       ) : (
-        <StaticHeroSlider />
+        <StaticHeroSlider phone={settings.phone} whatsapp={settings.whatsapp} freeShippingThreshold={settings.free_shipping_threshold} />
       )}
 
       {/* Features Bar */}
       <section className="py-8 bg-white border-b">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <FeatureItem icon={<Truck />} title="Ücretsiz Kargo" desc="5.000 TL üzeri" />
+            <FeatureItem icon={<Truck />} title="Ücretsiz Kargo" desc={`${settings.free_shipping_threshold.toLocaleString('tr-TR')} TL üzeri`} />
             <FeatureItem icon={<MessageCircle />} title="WhatsApp Destek" desc="Anında iletişim" />
             <FeatureItem icon={<Shield />} title="Güvenli Ödeme" desc="SSL korumalı" />
             <FeatureItem icon={<RefreshCcw />} title="Kolay İade" desc="14 gün içinde" />
@@ -225,7 +227,7 @@ export default async function HomePage() {
       )}
 
       {/* ⭐ YENİ: Promosyon Banner Grid (4'lü) */}
-      <PromoBannerGrid />
+      <PromoBannerGrid whatsapp={settings.whatsapp} freeShippingThreshold={settings.free_shipping_threshold} />
 
       {/* ⭐ KALE FİLELERİ - File Atölyesi tarzı */}
       {kaleProducts && kaleProducts.length > 0 && (
@@ -261,7 +263,7 @@ export default async function HomePage() {
       )}
 
       {/* ⭐ Özel Sipariş CTA Banner */}
-      <CustomOrderBanner />
+      <CustomOrderBanner phone={settings.phone} />
 
       {/* Why Choose Us */}
       <section className="py-16 bg-gray-50">

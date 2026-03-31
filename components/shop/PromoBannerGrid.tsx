@@ -15,11 +15,13 @@ interface PromoBanner {
   overlayColor: string
 }
 
-const promoBanners: PromoBanner[] = [
+function getPromoBanners(whatsapp: string, freeShippingThreshold: number): PromoBanner[] {
+  const whatsappNum = whatsapp.replace(/[^0-9]/g, '')
+  return [
   {
     icon: <Truck className="w-10 h-10" />,
     title: 'Ücretsiz Kargo',
-    subtitle: '5.000 TL Üzeri',
+    subtitle: `${freeShippingThreshold.toLocaleString('tr-TR')} TL Üzeri`,
     description: 'Türkiye\'nin her yerine ücretsiz teslimat',
     link: '/urunler',
     linkText: 'Alışverişe Başla',
@@ -30,7 +32,7 @@ const promoBanners: PromoBanner[] = [
     title: 'WhatsApp Destek',
     subtitle: '7/24 İletişim',
     description: 'Sorularınız için anında yardım alın',
-    link: 'https://wa.me/905418855676',
+    link: `https://wa.me/${whatsappNum}`,
     linkText: 'Bize Yazın',
     overlayColor: 'from-green-600/90 to-green-800/90',
   },
@@ -53,8 +55,15 @@ const promoBanners: PromoBanner[] = [
     overlayColor: 'from-purple-600/90 to-purple-800/90',
   },
 ]
+}
 
-export function PromoBannerGrid() {
+interface PromoBannerGridProps {
+  whatsapp?: string
+  freeShippingThreshold?: number
+}
+
+export function PromoBannerGrid({ whatsapp = '+905418855676', freeShippingThreshold = 5000 }: PromoBannerGridProps) {
+  const promoBanners = getPromoBanners(whatsapp, freeShippingThreshold)
   return (
     <section className="py-12 bg-white">
       <div className="container mx-auto px-4">

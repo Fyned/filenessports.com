@@ -1,36 +1,13 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Phone, Mail, Facebook, Instagram, Twitter, Youtube } from 'lucide-react'
+import { SiteSettings } from '@/lib/settings'
 
-interface SiteSettings {
-  site_name?: string
-  site_description?: string
-  phone?: string
-  email?: string
-  facebook?: string
-  instagram?: string
-  twitter?: string
-  youtube?: string
+interface FooterProps {
+  settings: SiteSettings
 }
 
-// Static settings - Filenes Sports branding
-function getSettings(): SiteSettings {
-  return {
-    site_name: 'Filenes Sports',
-    site_description: "Türkiye'nin lider spor ve güvenlik filesi üreticisi.",
-    phone: '+90 541 885 56 76',
-    email: 'info@fileenessports.com',
-    facebook: '',
-    instagram: '',
-    twitter: '',
-    youtube: ''
-  }
-}
-
-export function Footer() {
-  const settings = getSettings()
-
-  // Default values - Filenes Sports branding
+export function Footer({ settings }: FooterProps) {
   const siteName = settings.site_name || 'Filenes Sports'
   const siteDescription = settings.site_description || "Türkiye'nin lider spor ve güvenlik filesi üreticisi."
   const phone = settings.phone || '+90 541 885 56 76'
@@ -104,7 +81,6 @@ export function Footer() {
                   <Youtube className="w-5 h-5" />
                 </a>
               )}
-              {/* Show default icons if no social links */}
               {!facebook && !instagram && !twitter && !youtube && (
                 <>
                   <span className="text-gray-600" aria-label="Facebook">
@@ -228,7 +204,6 @@ export function Footer() {
               &copy; {new Date().getFullYear()} {siteName}. Tüm hakları saklıdır.
             </p>
             <div className="flex items-center gap-2">
-              {/* Payment method badges - text based */}
               <span className="bg-[#1A1F71] text-white text-xs font-bold px-3 py-1.5 rounded">
                 VISA
               </span>
