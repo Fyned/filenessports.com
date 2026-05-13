@@ -18,6 +18,7 @@ interface HeroSlide {
 }
 
 function getHeroSlides(phoneClean: string, whatsappNum: string, freeShippingThreshold: number): HeroSlide[] {
+  const allFreeShipping = !freeShippingThreshold || freeShippingThreshold <= 0
   return [
     {
       id: '1',
@@ -45,7 +46,9 @@ function getHeroSlides(phoneClean: string, whatsappNum: string, freeShippingThre
       id: '3',
       icon: '🚚',
       title: 'Ücretsiz Kargo',
-      subtitle: `${freeShippingThreshold.toLocaleString('tr-TR')} TL ve üzeri siparişlerinizde kargo tamamen ücretsiz!`,
+      subtitle: allFreeShipping
+        ? 'Tüm siparişlerinizde kargo tamamen ücretsiz!'
+        : `${freeShippingThreshold.toLocaleString('tr-TR')} TL ve üzeri siparişlerinizde kargo tamamen ücretsiz!`,
       gradientFrom: '#166534',
       gradientTo: '#15803d',
       buttonText: 'Alışverişe Başla',
@@ -72,7 +75,7 @@ interface StaticHeroSliderProps {
   freeShippingThreshold?: number
 }
 
-export function StaticHeroSlider({ phone = '+905418855676', whatsapp = '905418855676', freeShippingThreshold = 5000 }: StaticHeroSliderProps) {
+export function StaticHeroSlider({ phone = '+90 541 885 56 76', whatsapp = '905418855676', freeShippingThreshold = 0 }: StaticHeroSliderProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
   const whatsappNum = whatsapp.replace(/[^0-9]/g, '')

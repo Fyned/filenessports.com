@@ -118,9 +118,10 @@ export function CartClient({ freeShippingThreshold, defaultShippingCost }: CartC
   const subtotal = getSubtotal()
   const discountAmount = coupon?.discountAmount || 0
   const afterDiscount = subtotal - discountAmount
-  const shippingCost = afterDiscount >= freeShippingThreshold ? 0 : defaultShippingCost
+  const allFreeShipping = !freeShippingThreshold || freeShippingThreshold <= 0
+  const shippingCost = allFreeShipping || afterDiscount >= freeShippingThreshold ? 0 : defaultShippingCost
   const total = afterDiscount + shippingCost
-  const remainingForFreeShipping = freeShippingThreshold - afterDiscount
+  const remainingForFreeShipping = allFreeShipping ? 0 : freeShippingThreshold - afterDiscount
 
   return (
     <div className="container mx-auto px-4 py-12">

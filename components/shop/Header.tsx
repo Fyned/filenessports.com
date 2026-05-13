@@ -23,7 +23,8 @@ interface HeaderProps {
   email?: string
 }
 
-export function Header({ freeShippingThreshold = 500, phone = '+90 541 885 56 76', email = 'info@fileenessports.com' }: HeaderProps) {
+export function Header({ freeShippingThreshold = 0, phone = '+90 541 885 56 76', email = 'info@fileenessports.com' }: HeaderProps) {
+  const allFreeShipping = !freeShippingThreshold || freeShippingThreshold <= 0
   const [categories, setCategories] = useState<Category[]>([])
   const [isScrolled, setIsScrolled] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -98,7 +99,11 @@ export function Header({ freeShippingThreshold = 500, phone = '+90 541 885 56 76
             <div className="flex-1 text-center">
               <div className="flex items-center justify-center gap-2">
                 <Truck className="w-4 h-4 text-[#BB1624]" />
-                <span className="font-medium">{freeShippingThreshold.toLocaleString('tr-TR')} TL ve üzeri siparişlerde <span className="text-[#BB1624]">ÜCRETSİZ KARGO!</span></span>
+                {allFreeShipping ? (
+                  <span className="font-medium">Tüm Siparişlerde <span className="text-[#BB1624]">ÜCRETSİZ KARGO!</span></span>
+                ) : (
+                  <span className="font-medium">{freeShippingThreshold.toLocaleString('tr-TR')} TL ve üzeri siparişlerde <span className="text-[#BB1624]">ÜCRETSİZ KARGO!</span></span>
+                )}
               </div>
             </div>
 
@@ -271,7 +276,7 @@ export function Header({ freeShippingThreshold = 500, phone = '+90 541 885 56 76
                 </div>
                 <div>
                   <p className="font-semibold text-[#1C2840]">Ücretsiz Kargo</p>
-                  <p className="text-gray-500 text-xs">{freeShippingThreshold.toLocaleString('tr-TR')} TL üzeri siparişlerde</p>
+                  <p className="text-gray-500 text-xs">{allFreeShipping ? 'Tüm siparişlerde' : `${freeShippingThreshold.toLocaleString('tr-TR')} TL üzeri siparişlerde`}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 text-sm">

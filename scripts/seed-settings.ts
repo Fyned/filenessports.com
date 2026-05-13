@@ -11,14 +11,14 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey)
 const settings = [
   { key: 'site_name', value: 'Filenes Sports' },
   { key: 'site_description', value: 'Profesyonel Spor ve Güvenlik Fileleri Üreticisi' },
-  { key: 'phone', value: '0850 302 32 62' },
+  { key: 'phone', value: '+90 541 885 56 76' },
   { key: 'email', value: 'info@fileenessports.com' },
-  { key: 'whatsapp', value: '905001234567' },
-  { key: 'address', value: 'İstanbul, Türkiye' },
+  { key: 'whatsapp', value: '905418855676' },
+  { key: 'address', value: 'Namık Kemal Mah. 10. Sk. Çınar Apt. No: 73/1, Esenyurt/İstanbul' },
   { key: 'facebook', value: 'https://facebook.com/fileenessports' },
   { key: 'instagram', value: 'https://instagram.com/fileenessports' },
-  { key: 'free_shipping_threshold', value: '500' },
-  { key: 'default_shipping_cost', value: '29.90' },
+  { key: 'free_shipping_threshold', value: '0' },
+  { key: 'default_shipping_cost', value: '0' },
 ]
 
 async function seedSettings() {

@@ -17,11 +17,12 @@ interface PromoBanner {
 
 function getPromoBanners(whatsapp: string, freeShippingThreshold: number): PromoBanner[] {
   const whatsappNum = whatsapp.replace(/[^0-9]/g, '')
+  const allFreeShipping = !freeShippingThreshold || freeShippingThreshold <= 0
   return [
   {
     icon: <Truck className="w-10 h-10" />,
     title: 'Ücretsiz Kargo',
-    subtitle: `${freeShippingThreshold.toLocaleString('tr-TR')} TL Üzeri`,
+    subtitle: allFreeShipping ? 'Tüm Siparişlerde' : `${freeShippingThreshold.toLocaleString('tr-TR')} TL Üzeri`,
     description: 'Türkiye\'nin her yerine ücretsiz teslimat',
     link: '/urunler',
     linkText: 'Alışverişe Başla',
@@ -62,7 +63,7 @@ interface PromoBannerGridProps {
   freeShippingThreshold?: number
 }
 
-export function PromoBannerGrid({ whatsapp = '+905418855676', freeShippingThreshold = 5000 }: PromoBannerGridProps) {
+export function PromoBannerGrid({ whatsapp = '+905418855676', freeShippingThreshold = 0 }: PromoBannerGridProps) {
   const promoBanners = getPromoBanners(whatsapp, freeShippingThreshold)
   return (
     <section className="py-12 bg-white">

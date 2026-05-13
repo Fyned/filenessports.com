@@ -16,8 +16,8 @@ export interface SiteSettings {
 }
 
 const defaultSettings: SiteSettings = {
-  free_shipping_threshold: 5000,
-  default_shipping_cost: 49.90,
+  free_shipping_threshold: 0,
+  default_shipping_cost: 0,
   site_name: 'Filenes Sports',
   site_description: 'Profesyonel Spor ve Güvenlik Fileleri',
   phone: '+90 541 885 56 76',

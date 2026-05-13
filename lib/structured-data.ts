@@ -1,6 +1,6 @@
 import { Product, BlogPost } from '@/types/database'
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://filenes.com'
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://filenessports.com'
 
 // Organization schema
 export function getOrganizationSchema() {
@@ -17,7 +17,7 @@ export function getOrganizationSchema() {
     ],
     contactPoint: {
       '@type': 'ContactPoint',
-      telephone: '+90-xxx-xxx-xxxx',
+      telephone: '+90 541 885 56 76',
       contactType: 'customer service',
       availableLanguage: ['Turkish'],
     },

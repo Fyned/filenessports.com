@@ -120,7 +120,7 @@ export function FullWidthPromoBanner({
 }
 
 // Preset banner configurations
-export function CustomOrderBanner({ phone = '+905418855676' }: { phone?: string }) {
+export function CustomOrderBanner({ phone = '+90 541 885 56 76' }: { phone?: string }) {
   const phoneClean = phone.replace(/\s/g, '')
   return (
     <FullWidthPromoBanner

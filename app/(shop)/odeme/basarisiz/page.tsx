@@ -101,8 +101,8 @@ function PaymentFailedContent() {
         </div>
         <p className="text-sm text-gray-600">
           Müşteri hizmetlerimizi arayabilirsiniz:{' '}
-          <a href="tel:+902121234567" className="text-[#BB1624] font-medium">
-            +90 (212) 123 45 67
+          <a href="tel:+905418855676" className="text-[#BB1624] font-medium">
+            +90 541 885 56 76
           </a>
         </p>
         <p className="text-xs text-gray-500 mt-2">

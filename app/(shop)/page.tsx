@@ -196,7 +196,7 @@ export default async function HomePage() {
       <section className="py-8 bg-white border-b">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <FeatureItem icon={<Truck />} title="Ücretsiz Kargo" desc={`${settings.free_shipping_threshold.toLocaleString('tr-TR')} TL üzeri`} />
+            <FeatureItem icon={<Truck />} title="Ücretsiz Kargo" desc={settings.free_shipping_threshold > 0 ? `${settings.free_shipping_threshold.toLocaleString('tr-TR')} TL üzeri` : 'Tüm siparişlerde'} />
             <FeatureItem icon={<MessageCircle />} title="WhatsApp Destek" desc="Anında iletişim" />
             <FeatureItem icon={<Shield />} title="Güvenli Ödeme" desc="SSL korumalı" />
             <FeatureItem icon={<RefreshCcw />} title="Kolay İade" desc="14 gün içinde" />
